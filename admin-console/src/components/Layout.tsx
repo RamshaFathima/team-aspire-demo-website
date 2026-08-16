@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Activity,
   Award,
@@ -14,14 +15,17 @@ import {
   LogOut,
   Megaphone,
   Moon,
+  PenLine,
   Settings as SettingsIcon,
   ShieldCheck,
   Sun,
+  Trash2,
   Users,
 } from "lucide-react";
-import { can, clearSession, getUser } from "@/lib/api";
+import { api, can, clearSession, getUser } from "@/lib/api";
 import { applyTheme, getTheme, type Theme } from "@/lib/theme";
 import { AspireMark } from "@/components/AspireMark";
+import { ErrorNote, Modal } from "@/components/ui";
 
 type NavItem = { to: string; label: string; perm?: string; icon: React.ComponentType<{ className?: string }> };
 
@@ -81,6 +85,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate();
   const user = getUser();
   const [theme, setTheme] = useState<Theme>(getTheme);
+  const [profileOpen, setProfileOpen] = useState(false);
 
   useEffect(() => {
     applyTheme(theme);
@@ -138,7 +143,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         </nav>
 
         <div className="border-t border-border p-2.5">
-          <div className="flex items-center gap-2.5 rounded-lg px-2 py-1.5">
+          <button
+            className="flex w-full items-center gap-2.5 rounded-lg px-2 py-1.5 text-left transition hover:bg-muted/70"
+            onClick={() => setProfileOpen(true)}
+            title="My profile & signature"
+          >
             <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary/15 text-2xs font-bold text-primary">
               {user ? initials(user.fullName) : "?"}
             </span>
@@ -148,7 +157,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 {user?.roles.join(" · ").toLowerCase().replace(/_/g, " ")}
               </div>
             </div>
-          </div>
+            <PenLine className="h-3 w-3 shrink-0 text-muted-foreground/50" />
+          </button>
           <div className="mt-1 flex gap-1">
             <button
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
@@ -172,6 +182,95 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <main className="ml-[220px] flex-1">
         <div className="mx-auto max-w-[1200px] px-8 py-7">{children}</div>
       </main>
+
+      {profileOpen && <ProfileDialog onClose={() => setProfileOpen(false)} />}
     </div>
+  );
+}
+
+function ProfileDialog({ onClose }: { onClose: () => void }) {
+  const qc = useQueryClient();
+  const fileRef = useRef<HTMLInputElement>(null);
+  const [fileError, setFileError] = useState<string | null>(null);
+
+  const { data: me } = useQuery({
+    queryKey: ["me"],
+    queryFn: () => api<{ id: string; fullName: string; email: string; signatureUrl: string | null; roles: string[] }>("/auth/me"),
+  });
+
+  const signatureMutation = useMutation({
+    mutationFn: (signatureUrl: string | null) =>
+      api("/auth/me", { method: "PATCH", body: { signatureUrl } }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["me"] }),
+  });
+
+  const onFile = (file: File | undefined) => {
+    setFileError(null);
+    if (!file) return;
+    if (!/image\/(png|jpe?g|webp)/.test(file.type)) {
+      setFileError("Please choose a PNG or JPG image.");
+      return;
+    }
+    if (file.size > 300_000) {
+      setFileError("Image is too large — keep it under 300 KB. A small photo of your signature on white paper works best.");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => signatureMutation.mutate(reader.result as string);
+    reader.readAsDataURL(file);
+  };
+
+  return (
+    <Modal
+      title="My profile"
+      description={me ? `${me.fullName} · ${me.email}` : undefined}
+      open
+      onClose={onClose}
+      footer={
+        <button className="btn-secondary" onClick={onClose}>
+          Close
+        </button>
+      }
+    >
+      <div>
+        <div className="text-xs font-bold uppercase tracking-wide text-muted-foreground/70">Signature</div>
+        <p className="mt-1 text-xs text-muted-foreground">
+          Your signature appears on certificates for cohorts you teach. Upload a photo or scan of it (PNG/JPG, under 300 KB).
+        </p>
+
+        <div className="mt-3 flex h-28 items-center justify-center rounded-xl border border-dashed border-border bg-white">
+          {me?.signatureUrl ? (
+            <img src={me.signatureUrl} alt="Your signature" className="max-h-24 max-w-[85%] object-contain" />
+          ) : (
+            <span className="text-xs text-slate-400">No signature uploaded yet</span>
+          )}
+        </div>
+
+        <div className="mt-3 flex gap-2">
+          <input
+            ref={fileRef}
+            type="file"
+            accept="image/png,image/jpeg,image/webp"
+            className="hidden"
+            onChange={(e) => onFile(e.target.files?.[0])}
+          />
+          <button className="btn-primary text-xs" disabled={signatureMutation.isPending} onClick={() => fileRef.current?.click()}>
+            {signatureMutation.isPending ? "Saving…" : me?.signatureUrl ? "Replace signature" : "Upload signature"}
+          </button>
+          {me?.signatureUrl && (
+            <button
+              className="btn-secondary text-xs"
+              disabled={signatureMutation.isPending}
+              onClick={() => signatureMutation.mutate(null)}
+            >
+              <Trash2 className="mr-1 inline h-3 w-3" /> Remove
+            </button>
+          )}
+        </div>
+
+        {fileError && <p className="mt-2 text-xs font-medium text-destructive">{fileError}</p>}
+        <ErrorNote error={signatureMutation.error} />
+      </div>
+    </Modal>
   );
 }

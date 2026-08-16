@@ -47,6 +47,13 @@ class CmsService {
         });
         return page;
     }
+
+    async removePage(id: string) {
+        const page = await Page.findByPk(id);
+        if (!page) throw new ValidationError('Page not found', StatusCodes.NOT_FOUND);
+        await page.destroy();
+        return { ok: true, title: page.title };
+    }
 }
 
 export default new CmsService();

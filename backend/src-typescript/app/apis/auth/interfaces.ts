@@ -17,6 +17,7 @@ export interface IRefreshBody {
 export interface IUpdateMeBody {
     fullName?: string;
     phone?: string | null;
+    signatureUrl?: string | null;
 }
 
 export interface IChangePasswordBody {

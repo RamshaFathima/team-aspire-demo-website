@@ -108,6 +108,7 @@ export class UpdateMeController extends MasterController<null, null, IUpdateMeBo
             Joi.object().keys({
                 fullName: Joi.string().min(2).max(120).optional(),
                 phone: Joi.string().min(7).max(20).allow(null).optional(),
+                signatureUrl: Joi.string().dataUri().max(400_000).allow(null).optional(),
             })
         );
         return payload;

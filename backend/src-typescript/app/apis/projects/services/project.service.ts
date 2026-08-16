@@ -67,6 +67,13 @@ class ProjectService {
         await ProjectUpdate.destroy({ where: { id: updateId } });
         return { ok: true };
     }
+
+    async remove(id: string) {
+        const project = await Project.findByPk(id);
+        if (!project) throw new ValidationError('Project not found', StatusCodes.NOT_FOUND);
+        await project.destroy(); // donations keep their rows (project link nulled)
+        return { ok: true, title: project.title };
+    }
 }
 
 export default new ProjectService();

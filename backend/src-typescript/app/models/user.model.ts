@@ -21,6 +21,9 @@ export default class User extends Model {
     @Column({ type: DataType.STRING, allowNull: true })
     avatarUrl: string;
 
+    @Column({ type: DataType.TEXT, allowNull: true })
+    signatureUrl: string; // data-URL image, shown on certificates they teach
+
     @Column({ type: DataType.STRING, allowNull: false, defaultValue: 'active' })
     status: string; // active | suspended
 

@@ -18,6 +18,8 @@ type Certificate = {
 
 type CohortLite = { id: string; name: string; courseTitle: string; courseId: string };
 
+const SITE_URL = (import.meta.env.VITE_SITE_URL as string | undefined) ?? "http://localhost:3000";
+
 type Eligibility = {
   cohort: { id: string; name: string; courseId: string; courseTitle: string; minAttendancePct: number };
   students: {
@@ -28,6 +30,9 @@ type Eligibility = {
     attended: number;
     attendancePct: number;
     eligible: boolean;
+    alreadyIssued: boolean;
+    hasRevoked: boolean;
+    certificateNumber: string | null;
   }[];
 };
 
@@ -42,6 +47,11 @@ export default function Certificates() {
   });
 
   const refresh = () => qc.invalidateQueries({ queryKey: ["certificates"] });
+
+  const reinstateMutation = useMutation({
+    mutationFn: (id: string) => api(`/certificates/${id}/reinstate`, { method: "POST" }),
+    onSuccess: refresh,
+  });
 
   return (
     <>
@@ -83,9 +93,28 @@ export default function Certificates() {
                   <td className="td text-muted-foreground">{fmtDate(c.issuedAt)}</td>
                   <td className="td"><Badge value={c.status} /></td>
                   <td className="td text-right">
-                    {c.status === "active" && can("certificates.revoke") && (
-                      <button className="btn-danger !px-2.5 !py-1 text-xs" onClick={() => setRevoking(c)}>Revoke</button>
-                    )}
+                    <div className="flex items-center justify-end gap-1.5">
+                      <a
+                        href={`${SITE_URL}/certificates/${c.verificationCode}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="btn-secondary !px-2.5 !py-1 text-xs"
+                      >
+                        View
+                      </a>
+                      {c.status === "active" && can("certificates.revoke") && (
+                        <button className="btn-danger !px-2.5 !py-1 text-xs" onClick={() => setRevoking(c)}>Revoke</button>
+                      )}
+                      {c.status === "revoked" && can("certificates.issue") && (
+                        <button
+                          className="btn-primary !px-2.5 !py-1 text-xs"
+                          disabled={reinstateMutation.isPending}
+                          onClick={() => reinstateMutation.mutate(c.id)}
+                        >
+                          Reinstate
+                        </button>
+                      )}
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -178,7 +207,15 @@ function EligibilityModal({ onClose, onDone }: { onClose: () => void; onDone: ()
                   </td>
                   <td className="td">{s.eligible ? <Badge value="active" /> : <Badge value="failed" />}</td>
                   <td className="td text-right">
-                    {issued[s.userId] ? (
+                    {s.alreadyIssued ? (
+                      <span className="text-xs font-semibold text-emerald-600" title={s.certificateNumber ?? undefined}>
+                        Already issued ✓
+                      </span>
+                    ) : s.hasRevoked ? (
+                      <span className="text-xs font-medium text-amber-600" title="This student's certificate was revoked. Reinstate it from the certificates list instead of issuing a duplicate.">
+                        Revoked — reinstate from list
+                      </span>
+                    ) : issued[s.userId] ? (
                       <span className="text-xs font-semibold text-emerald-600">Issued ✓</span>
                     ) : (
                       <button

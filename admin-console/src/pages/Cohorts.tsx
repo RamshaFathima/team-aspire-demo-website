@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { api, can, fmtDate } from "@/lib/api";
 import { Badge, ErrorNote, Field, Modal, PageHeader, Spinner } from "@/components/ui";
 import { Select } from "@/components/ui/select";
+import { DatePicker } from "@/components/ui/datetime-picker";
 
 type Cohort = {
   id: string;
@@ -153,7 +154,7 @@ function CohortModal({ courses, onClose, onDone }: { courses: Course[]; onClose:
         </Field>
         <div className="grid grid-cols-3 gap-3">
           <Field label="Starts on">
-            <input className="input" type="date" value={startsOn} onChange={(e) => setStartsOn(e.target.value)} />
+            <DatePicker value={startsOn} onChange={setStartsOn} />
           </Field>
           <Field label="Capacity">
             <input className="input" type="number" value={capacity} onChange={(e) => setCapacity(e.target.value)} placeholder="No limit" />

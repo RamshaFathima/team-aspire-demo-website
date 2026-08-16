@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { HeartHandshake, Loader2, Send } from "lucide-react";
 import { api, can, fmtDate, inr } from "@/lib/api";
-import { Badge, EmptyState, ErrorNote, Field, Modal, PageHeader, TableSkeleton } from "@/components/ui";
+import { Badge, ConfirmDialog, EmptyState, ErrorNote, Field, Modal, PageHeader, TableSkeleton } from "@/components/ui";
 import { Select } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card } from "@/components/ui/card";
@@ -100,6 +100,7 @@ export default function Projects() {
 function ProjectDetail({ id, onClose, onDone }: { id: string; onClose: () => void; onDone: () => void }) {
   const qc = useQueryClient();
   const [editOpen, setEditOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
   const [updateTitle, setUpdateTitle] = useState("");
   const [updateBody, setUpdateBody] = useState("");
   const [pendingStatus, setPendingStatus] = useState<string | null>(null);
@@ -107,6 +108,14 @@ function ProjectDetail({ id, onClose, onDone }: { id: string; onClose: () => voi
   const { data: project } = useQuery({
     queryKey: ["project", id],
     queryFn: () => api<Project>(`/projects/${id}`),
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: () => api(`/projects/${id}`, { method: "DELETE" }),
+    onSuccess: () => {
+      onDone();
+      onClose();
+    },
   });
 
   const statusMutation = useMutation({
@@ -147,6 +156,11 @@ function ProjectDetail({ id, onClose, onDone }: { id: string; onClose: () => voi
       wide
       footer={
         <>
+          {can("projects.manage") && (
+            <button className="btn-danger mr-auto" onClick={() => setDeleteOpen(true)}>
+              Delete
+            </button>
+          )}
           <button className="btn-secondary" onClick={onClose}>
             Close
           </button>
@@ -271,6 +285,16 @@ function ProjectDetail({ id, onClose, onDone }: { id: string; onClose: () => voi
           }}
         />
       )}
+      <ConfirmDialog
+        open={deleteOpen}
+        title={`Delete “${project.title}”?`}
+        message="The project and its updates are removed. Past donations stay on record, just no longer linked to it."
+        confirmLabel="Delete project"
+        busy={deleteMutation.isPending}
+        error={deleteMutation.error}
+        onConfirm={() => deleteMutation.mutate()}
+        onCancel={() => setDeleteOpen(false)}
+      />
     </Modal>
   );
 }

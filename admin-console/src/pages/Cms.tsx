@@ -16,7 +16,7 @@ import {
   Type,
 } from "lucide-react";
 import { api, fmtDateTime } from "@/lib/api";
-import { Badge, EmptyState, ErrorNote, Field, Modal, PageHeader, TableSkeleton } from "@/components/ui";
+import { Badge, ConfirmDialog, EmptyState, ErrorNote, Field, Modal, PageHeader, TableSkeleton } from "@/components/ui";
 import { Card } from "@/components/ui/card";
 
 type Block = {
@@ -63,6 +63,7 @@ export default function Cms() {
   const qc = useQueryClient();
   const [editing, setEditing] = useState<Page | null>(null);
   const [createOpen, setCreateOpen] = useState(false);
+  const [deleting, setDeleting] = useState<Page | null>(null);
 
   const { data: pages, isLoading } = useQuery({
     queryKey: ["cms-pages"],
@@ -73,6 +74,14 @@ export default function Cms() {
     mutationFn: ({ id, publish }: { id: string; publish: boolean }) =>
       api(`/cms/pages/${id}/publish`, { method: "POST", body: { publish } }),
     onSuccess: () => qc.invalidateQueries({ queryKey: ["cms-pages"] }),
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (id: string) => api(`/cms/pages/${id}`, { method: "DELETE" }),
+    onSuccess: () => {
+      setDeleting(null);
+      qc.invalidateQueries({ queryKey: ["cms-pages"] });
+    },
   });
 
   const refresh = () => qc.invalidateQueries({ queryKey: ["cms-pages"] });
@@ -136,6 +145,13 @@ export default function Cms() {
                     <button className="btn-primary !px-2.5 !py-1 text-xs" onClick={() => setEditing(p)}>
                       Open builder
                     </button>
+                    <button
+                      className="rounded-md p-1.5 align-middle text-muted-foreground/50 transition hover:bg-destructive/10 hover:text-destructive"
+                      title="Delete page"
+                      onClick={() => setDeleting(p)}
+                    >
+                      <Trash2 className="h-3.5 w-3.5" />
+                    </button>
                   </td>
                 </tr>
               ))}
@@ -154,6 +170,17 @@ export default function Cms() {
           onDone={refresh}
         />
       )}
+
+      <ConfirmDialog
+        open={!!deleting}
+        title={`Delete “${deleting?.title}”?`}
+        message="The page is removed from the website immediately."
+        confirmLabel="Delete page"
+        busy={deleteMutation.isPending}
+        error={deleteMutation.error}
+        onConfirm={() => deleting && deleteMutation.mutate(deleting.id)}
+        onCancel={() => setDeleting(null)}
+      />
     </>
   );
 }

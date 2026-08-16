@@ -1,6 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import Link from "next/link";
+import { Suspense, useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { clientApi } from "@/lib/client-api";
 
 type VerifyResult = {
@@ -14,19 +16,19 @@ type VerifyResult = {
   expiresAt?: string | null;
 };
 
-export default function VerifyPage() {
-  const [code, setCode] = useState("");
+function VerifyForm() {
+  const params = useSearchParams();
+  const [code, setCode] = useState(params.get("code")?.toUpperCase() ?? "");
   const [result, setResult] = useState<VerifyResult | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const verify = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!code.trim()) return;
+  const runVerify = async (value: string) => {
+    if (!value.trim()) return;
     setLoading(true);
     setResult(null);
     try {
       const data = await clientApi<VerifyResult>(
-        `/public/certificates/verify/${encodeURIComponent(code.trim())}`,
+        `/public/certificates/verify/${encodeURIComponent(value.trim())}`,
         { auth: false },
       );
       setResult(data);
@@ -37,18 +39,20 @@ export default function VerifyPage() {
     }
   };
 
-  return (
-    <div className="mx-auto max-w-xl px-4 py-16">
-      <div className="text-center">
-        <p className="text-xs font-bold uppercase tracking-[0.2em] text-gold-600">Certificates</p>
-        <h1 className="mt-2 font-serif text-3xl text-maroon-900 md:text-4xl">
-          Verify a certificate
-        </h1>
-        <p className="mt-3 text-sm text-maroon-950/60">
-          Enter the verification code printed on the certificate (e.g. 7FK3-Q9ZM).
-        </p>
-      </div>
+  // Auto-verify when arriving with ?code=
+  useEffect(() => {
+    const initial = params.get("code");
+    if (initial) void runVerify(initial);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
+  const verify = async (e: React.FormEvent) => {
+    e.preventDefault();
+    await runVerify(code);
+  };
+
+  return (
+    <>
       <form onSubmit={verify} className="card mt-8 flex gap-3 p-4">
         <input
           className="input flex-1 uppercase"
@@ -100,6 +104,9 @@ export default function VerifyPage() {
                   <dd>{result.issuedAt ? new Date(result.issuedAt).toLocaleDateString("en-IN") : "—"}</dd>
                 </div>
               </dl>
+              <Link href={`/certificates/${encodeURIComponent(code.trim())}`} className="btn-primary mt-5 w-full !py-2 text-xs">
+                View & download the certificate
+              </Link>
             </>
           ) : (
             <div className="flex items-center gap-2 text-rose-700">
@@ -118,6 +125,25 @@ export default function VerifyPage() {
           )}
         </div>
       )}
+    </>
+  );
+}
+
+export default function VerifyPage() {
+  return (
+    <div className="mx-auto max-w-xl px-4 py-16">
+      <div className="text-center">
+        <p className="text-xs font-bold uppercase tracking-[0.2em] text-gold-600">Certificates</p>
+        <h1 className="mt-2 font-serif text-3xl text-maroon-900 md:text-4xl">
+          Verify a certificate
+        </h1>
+        <p className="mt-3 text-sm text-maroon-950/60">
+          Enter the verification code printed on the certificate (e.g. 7FK3-Q9ZM).
+        </p>
+      </div>
+      <Suspense>
+        <VerifyForm />
+      </Suspense>
     </div>
   );
 }

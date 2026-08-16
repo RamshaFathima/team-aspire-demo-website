@@ -116,9 +116,13 @@ export default function DonateFlow({
             Receipt no: {receipt}
           </p>
         )}
-        <div className="mt-6 flex justify-center gap-3">
+        <div className="mt-6 flex flex-wrap justify-center gap-3">
+          {init && (
+            <Link href={`/donations/${init.donationId}`} className="btn-primary !py-2 text-xs">
+              View & download receipt
+            </Link>
+          )}
           <Link href="/projects" className="btn-outline !py-2 text-xs">Explore projects</Link>
-          <Link href="/account" className="btn-primary !py-2 text-xs">My account</Link>
         </div>
       </div>
     );

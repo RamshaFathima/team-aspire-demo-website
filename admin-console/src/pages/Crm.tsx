@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { api, can, fmtDate, fmtDateTime, inr } from "@/lib/api";
-import { Avatar, Badge, ErrorNote, Modal, PageHeader, TableSkeleton } from "@/components/ui";
+import { Avatar, Badge, ConfirmDialog, ErrorNote, Modal, PageHeader, TableSkeleton } from "@/components/ui";
 import { Select } from "@/components/ui/select";
 
 type Contact = {
@@ -113,6 +113,7 @@ export default function Crm() {
 function Person360Modal({ id, onClose }: { id: string; onClose: () => void }) {
   const qc = useQueryClient();
   const [note, setNote] = useState("");
+  const [deleteOpen, setDeleteOpen] = useState(false);
 
   const { data: person } = useQuery({
     queryKey: ["person360", id],
@@ -128,6 +129,14 @@ function Person360Modal({ id, onClose }: { id: string; onClose: () => void }) {
     onSuccess: () => { setNote(""); qc.invalidateQueries({ queryKey: ["person360", id] }); },
   });
 
+  const deleteMutation = useMutation({
+    mutationFn: () => api(`/crm/contacts/${id}`, { method: "DELETE" }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["contacts"] });
+      onClose();
+    },
+  });
+
   if (!person) return null;
 
   return (
@@ -138,9 +147,16 @@ function Person360Modal({ id, onClose }: { id: string; onClose: () => void }) {
       onClose={onClose}
       wide
       footer={
-        <button className="btn-secondary" onClick={onClose}>
-          Close
-        </button>
+        <>
+          {can("crm.manage") && (
+            <button className="btn-danger mr-auto" onClick={() => setDeleteOpen(true)}>
+              Delete contact
+            </button>
+          )}
+          <button className="btn-secondary" onClick={onClose}>
+            Close
+          </button>
+        </>
       }
     >
       <div className="mb-4">
@@ -204,6 +220,17 @@ function Person360Modal({ id, onClose }: { id: string; onClose: () => void }) {
           {person.timeline.length === 0 && <p className="py-4 text-center text-xs text-muted-foreground/70">No interactions yet.</p>}
         </div>
       </div>
+
+      <ConfirmDialog
+        open={deleteOpen}
+        title={`Delete ${person.fullName}?`}
+        message="Removes this contact and their interaction history from the CRM. Linked donations and enrollments stay on record."
+        confirmLabel="Delete contact"
+        busy={deleteMutation.isPending}
+        error={deleteMutation.error}
+        onConfirm={() => deleteMutation.mutate()}
+        onCancel={() => setDeleteOpen(false)}
+      />
     </Modal>
   );
 }

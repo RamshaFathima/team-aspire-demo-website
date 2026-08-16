@@ -116,3 +116,27 @@ export class CertificateEligibilityController extends MasterController<{ cohortI
         return new ResponseBuilder(StatusCodes.SUCCESS, result, 'OK');
     }
 }
+
+export class ReinstateCertificateController extends MasterController<IdParams, null, null> {
+    static doc() {
+        return { tags: ['Certificates'], summary: 'Reinstate certificate', description: 'Bring a revoked certificate back into force' };
+    }
+
+    public static validate(): RequestBuilder {
+        const payload = new RequestBuilder();
+        payload.addToPath(Joi.object().keys({ id: Joi.string().uuid().required() }));
+        return payload;
+    }
+
+    async restController(
+        params: IdParams,
+        _query: null,
+        _body: null,
+        _headers: any,
+        allData: any
+    ): Promise<ResponseBuilder> {
+        const certificate = await certificateService.reinstate(params.id);
+        audit(allData, { action: 'certificate.reinstate', resourceType: 'certificate', resourceId: params.id });
+        return new ResponseBuilder(StatusCodes.SUCCESS, certificate, 'Certificate reinstated');
+    }
+}

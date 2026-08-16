@@ -1,8 +1,10 @@
 import { useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Trash2 } from "lucide-react";
 import { api, can, fmtDate, fmtDateTime } from "@/lib/api";
-import { Badge, ErrorNote, Field, Modal, PageHeader, Spinner } from "@/components/ui";
+import { Badge, ConfirmDialog, ErrorNote, Field, Modal, PageHeader, Spinner } from "@/components/ui";
+import { DateTimePicker } from "@/components/ui/datetime-picker";
 
 type CohortDetailData = {
   id: string;
@@ -20,10 +22,13 @@ type UserLite = { id: string; fullName: string; email: string; roles: string[] }
 
 export default function CohortDetail() {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const qc = useQueryClient();
   const [enrollOpen, setEnrollOpen] = useState(false);
   const [teacherOpen, setTeacherOpen] = useState(false);
   const [sessionOpen, setSessionOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [deleteSessionId, setDeleteSessionId] = useState<string | null>(null);
 
   const { data: cohort, isLoading } = useQuery({
     queryKey: ["cohort", id],
@@ -32,6 +37,22 @@ export default function CohortDetail() {
   });
 
   const refresh = () => qc.invalidateQueries({ queryKey: ["cohort", id] });
+
+  const deleteCohortMutation = useMutation({
+    mutationFn: () => api(`/lms/cohorts/${id}`, { method: "DELETE" }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["cohorts"] });
+      navigate("/lms/cohorts");
+    },
+  });
+
+  const deleteSessionMutation = useMutation({
+    mutationFn: (sessionId: string) => api(`/lms/sessions/${sessionId}`, { method: "DELETE" }),
+    onSuccess: () => {
+      setDeleteSessionId(null);
+      refresh();
+    },
+  });
 
   if (isLoading || !cohort) return <Spinner />;
 
@@ -46,6 +67,9 @@ export default function CohortDetail() {
               <>
                 <button className="btn-secondary" onClick={() => setTeacherOpen(true)}>+ Teacher</button>
                 <button className="btn-secondary" onClick={() => setSessionOpen(true)}>+ Session</button>
+                <button className="btn-danger" onClick={() => setDeleteOpen(true)} title="Delete cohort">
+                  <Trash2 className="h-3.5 w-3.5" />
+                </button>
               </>
             )}
             {can("lms.enrollments.manage") && (
@@ -115,7 +139,18 @@ export default function CohortDetail() {
                   <td className="td text-xs text-muted-foreground">{fmtDateTime(s.startsAt)}</td>
                   <td className="td"><Badge value={s.status} /></td>
                   <td className="td text-right">
-                    <Link to={`/lms/attendance?session=${s.id}`} className="btn-secondary !px-2 !py-1 text-xs">Attendance</Link>
+                    <div className="flex items-center justify-end gap-1.5">
+                      <Link to={`/lms/attendance?session=${s.id}`} className="btn-secondary !px-2 !py-1 text-xs">Attendance</Link>
+                      {can("lms.cohorts.manage") && (
+                        <button
+                          className="rounded-md p-1.5 text-muted-foreground/50 transition hover:bg-destructive/10 hover:text-destructive"
+                          title="Delete session"
+                          onClick={() => setDeleteSessionId(s.id)}
+                        >
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </button>
+                      )}
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -130,6 +165,27 @@ export default function CohortDetail() {
       {enrollOpen && <EnrollModal cohortId={cohort.id} onClose={() => setEnrollOpen(false)} onDone={refresh} />}
       {teacherOpen && <TeacherModal cohortId={cohort.id} onClose={() => setTeacherOpen(false)} onDone={refresh} />}
       {sessionOpen && <SessionModal cohortId={cohort.id} onClose={() => setSessionOpen(false)} onDone={refresh} />}
+
+      <ConfirmDialog
+        open={deleteOpen}
+        title={`Delete “${cohort.name}”?`}
+        message="Removes this cohort with all its sessions, enrollments and attendance records."
+        confirmLabel="Delete cohort"
+        busy={deleteCohortMutation.isPending}
+        error={deleteCohortMutation.error}
+        onConfirm={() => deleteCohortMutation.mutate()}
+        onCancel={() => setDeleteOpen(false)}
+      />
+      <ConfirmDialog
+        open={!!deleteSessionId}
+        title="Delete this class session?"
+        message="Its attendance records are removed with it."
+        confirmLabel="Delete session"
+        busy={deleteSessionMutation.isPending}
+        error={deleteSessionMutation.error}
+        onConfirm={() => deleteSessionId && deleteSessionMutation.mutate(deleteSessionId)}
+        onCancel={() => setDeleteSessionId(null)}
+      />
     </>
   );
 }
@@ -261,7 +317,7 @@ function SessionModal({ cohortId, onClose, onDone }: { cohortId: string; onClose
           <input className="input" value={topic} onChange={(e) => setTopic(e.target.value)} placeholder="What will be covered?" />
         </Field>
         <Field label="Starts at">
-          <input className="input" type="datetime-local" value={startsAt} onChange={(e) => setStartsAt(e.target.value)} />
+          <DateTimePicker value={startsAt} onChange={setStartsAt} />
         </Field>
         <Field label="Meeting link (optional)">
           <input className="input" value={meetingUrl} onChange={(e) => setMeetingUrl(e.target.value)} placeholder="https://zoom.us/…" />

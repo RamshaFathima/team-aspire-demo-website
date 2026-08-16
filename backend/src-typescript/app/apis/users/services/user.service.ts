@@ -120,6 +120,18 @@ class UserService {
         await invalidateUserContext(id);
         return { ok: true, roles: roles.map((r) => r.key) };
     }
+
+    async remove(id: string, actorId: string) {
+        if (id === actorId) throw new ValidationError('You cannot delete your own account');
+        const user = await User.findByPk(id, { include: [{ model: UserRole, include: [Role] }] });
+        if (!user) throw new ValidationError('User not found', StatusCodes.NOT_FOUND);
+        if (user.userRoles?.some((ur) => ur.role?.key === 'SUPER_ADMIN')) {
+            throw new ValidationError('Super admin accounts cannot be deleted');
+        }
+        await user.destroy(); // cascades enrollments, attendance, certificates, notifications
+        await invalidateUserContext(id);
+        return { ok: true, name: user.fullName };
+    }
 }
 
 export default new UserService();

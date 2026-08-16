@@ -112,6 +112,13 @@ class CrmService {
             createdBy,
         } as any);
     }
+
+    async removeContact(id: string) {
+        const contact = await Contact.findByPk(id);
+        if (!contact) throw new ValidationError('Contact not found', StatusCodes.NOT_FOUND);
+        await contact.destroy(); // interactions cascade
+        return { ok: true, name: contact.fullName };
+    }
 }
 
 export default new CrmService();

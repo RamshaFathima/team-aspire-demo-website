@@ -228,7 +228,11 @@ export default function AccountPage() {
                   <td className="px-5 py-3.5 font-semibold text-maroon-900">{inr(d.amount)}</td>
                   <td className="px-5 py-3.5 text-maroon-950/70">{d.project?.title ?? "General fund"}</td>
                   <td className="px-5 py-3.5"><Badge value={d.status} /></td>
-                  <td className="px-5 py-3.5 font-mono text-xs text-maroon-950/60">{d.receiptNumber ?? "—"}</td>
+                  <td className="px-5 py-3.5">
+                    <Link href={`/donations/${d.id}`} className="font-mono text-xs text-maroon-700 hover:underline">
+                      {d.receiptNumber ?? "view"}
+                    </Link>
+                  </td>
                 </tr>
               ))}
               {donations.length === 0 && (
@@ -280,8 +284,8 @@ export default function AccountPage() {
                 <div>Issued {formatDate(c.issuedAt)}</div>
                 <div className="font-mono">{c.certificateNumber}</div>
               </div>
-              <Link href={`/verify?code=${c.verificationCode}`} className="btn-outline mt-4 !px-4 !py-1.5 text-xs">
-                Verify publicly · {c.verificationCode}
+              <Link href={`/certificates/${c.verificationCode}`} className="btn-primary mt-4 !px-4 !py-1.5 text-xs">
+                View & download
               </Link>
             </div>
           ))}

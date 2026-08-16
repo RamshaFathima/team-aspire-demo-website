@@ -3,6 +3,7 @@ import {
     CertificateEligibilityController,
     IssueCertificateController,
     ListCertificatesController,
+    ReinstateCertificateController,
     RevokeCertificateController,
 } from '../apis/certificates/controllers/certificate.controllers';
 import {
@@ -29,6 +30,7 @@ export default (app: express.Application) => {
     ListCertificatesController.get(app, '/api/v1/certificates', [auth, requirePermission('certificates.read')]);
     IssueCertificateController.post(app, '/api/v1/certificates', [auth, requirePermission('certificates.issue')]);
     RevokeCertificateController.post(app, '/api/v1/certificates/:id/revoke', [auth, requirePermission('certificates.revoke')]);
+    ReinstateCertificateController.post(app, '/api/v1/certificates/:id/reinstate', [auth, requirePermission('certificates.issue')]);
     CertificateEligibilityController.get(app, '/api/v1/certificates/eligibility/:cohortId', [auth, requirePermission('certificates.issue')]);
 
     // CMS

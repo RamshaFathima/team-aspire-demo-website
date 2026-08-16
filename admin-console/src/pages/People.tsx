@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { api, can, fmtDate } from "@/lib/api";
-import { Avatar, Badge, ErrorNote, Field, Modal, PageHeader, TableSkeleton } from "@/components/ui";
+import { api, can, fmtDate, getUser } from "@/lib/api";
+import { Avatar, Badge, ConfirmDialog, ErrorNote, Field, Modal, PageHeader, TableSkeleton } from "@/components/ui";
 import { Select } from "@/components/ui/select";
 
 type User = {
@@ -182,6 +182,9 @@ function CreateUserModal({ open, onClose, roles, onDone }: { open: boolean; onCl
 function EditUserModal({ user, roles, onClose, onDone }: { user: User; roles: Role[]; onClose: () => void; onDone: () => void }) {
   const [status, setStatus] = useState(user.status);
   const [roleKeys, setRoleKeys] = useState<string[]>(user.roles);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const isSelf = getUser()?.id === user.id;
+  const isSuperAdmin = user.roles.includes("SUPER_ADMIN");
 
   const saveMutation = useMutation({
     mutationFn: async () => {
@@ -198,6 +201,14 @@ function EditUserModal({ user, roles, onClose, onDone }: { user: User; roles: Ro
     },
   });
 
+  const deleteMutation = useMutation({
+    mutationFn: () => api(`/users/${user.id}`, { method: "DELETE" }),
+    onSuccess: () => {
+      onDone();
+      onClose();
+    },
+  });
+
   return (
     <Modal
       title={user.fullName}
@@ -206,6 +217,11 @@ function EditUserModal({ user, roles, onClose, onDone }: { user: User; roles: Ro
       onClose={onClose}
       footer={
         <>
+          {can("users.delete") && !isSelf && !isSuperAdmin && (
+            <button className="btn-danger mr-auto" onClick={() => setDeleteOpen(true)}>
+              Delete account
+            </button>
+          )}
           <button className="btn-secondary" onClick={onClose}>
             Cancel
           </button>
@@ -246,6 +262,17 @@ function EditUserModal({ user, roles, onClose, onDone }: { user: User; roles: Ro
         )}
         <ErrorNote error={saveMutation.error} />
       </div>
+
+      <ConfirmDialog
+        open={deleteOpen}
+        title={`Delete ${user.fullName}'s account?`}
+        message="They can no longer sign in. Their donations, enrollments and certificates stay on record."
+        confirmLabel="Delete account"
+        busy={deleteMutation.isPending}
+        error={deleteMutation.error}
+        onConfirm={() => deleteMutation.mutate()}
+        onCancel={() => setDeleteOpen(false)}
+      />
     </Modal>
   );
 }

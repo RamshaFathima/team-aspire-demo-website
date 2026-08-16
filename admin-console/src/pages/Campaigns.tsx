@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { api, can, inr } from "@/lib/api";
-import { Badge, ErrorNote, Field, Modal, PageHeader, Spinner } from "@/components/ui";
+import { Badge, ConfirmDialog, ErrorNote, Field, Modal, PageHeader, Spinner } from "@/components/ui";
 import { Select } from "@/components/ui/select";
 
 type Campaign = {
@@ -54,7 +54,11 @@ export default function Campaigns() {
                   <h3 className="font-bold text-foreground/90">{c.title}</h3>
                   <Badge value={c.status} />
                 </div>
-                {c.project && <div className="mt-1 text-xs text-muted-foreground/70">↳ {c.project.title}</div>}
+                {c.project && (
+                  <div className="mt-1.5 inline-flex items-center gap-1 rounded-full bg-primary/8 px-2 py-0.5 text-2xs font-medium text-primary" title="Donations to this campaign also count toward this project's raised total.">
+                    Counts toward: {c.project.title}
+                  </div>
+                )}
                 <p className="mt-2 line-clamp-2 text-xs text-muted-foreground">{c.description}</p>
                 <div className="mt-4">
                   <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
@@ -92,6 +96,15 @@ function CampaignModal({ campaign, projects, onClose, onDone }: { campaign: Camp
   const [projectId, setProjectId] = useState(campaign?.project?.id ?? "");
   const [goalAmount, setGoalAmount] = useState(campaign?.goalAmount ?? "");
   const [status, setStatus] = useState(campaign?.status ?? "active");
+  const [deleteOpen, setDeleteOpen] = useState(false);
+
+  const deleteMutation = useMutation({
+    mutationFn: () => api(`/donations/campaigns/${campaign!.id}`, { method: "DELETE" }),
+    onSuccess: () => {
+      onDone();
+      onClose();
+    },
+  });
 
   const mutation = useMutation({
     mutationFn: () => {
@@ -117,6 +130,11 @@ function CampaignModal({ campaign, projects, onClose, onDone }: { campaign: Camp
       onClose={onClose}
       footer={
         <>
+          {campaign && (
+            <button className="btn-danger mr-auto" onClick={() => setDeleteOpen(true)}>
+              Delete
+            </button>
+          )}
           <button className="btn-secondary" onClick={onClose}>
             Cancel
           </button>
@@ -147,6 +165,9 @@ function CampaignModal({ campaign, projects, onClose, onDone }: { campaign: Camp
                 </option>
               ))}
             </Select>
+            <p className="mt-1 text-2xs text-muted-foreground">
+              Donations to this campaign also count toward the linked project's raised total.
+            </p>
           </Field>
           <Field label="Goal (₹)">
             <input className="input" type="number" value={goalAmount} onChange={(e) => setGoalAmount(e.target.value)} />
@@ -161,6 +182,16 @@ function CampaignModal({ campaign, projects, onClose, onDone }: { campaign: Camp
         </Field>
         <ErrorNote error={mutation.error} />
       </div>
+      <ConfirmDialog
+        open={deleteOpen}
+        title={`Delete “${campaign?.title}”?`}
+        message="The campaign is removed; its donations stay on record without the campaign link."
+        confirmLabel="Delete campaign"
+        busy={deleteMutation.isPending}
+        error={deleteMutation.error}
+        onConfirm={() => deleteMutation.mutate()}
+        onCancel={() => setDeleteOpen(false)}
+      />
     </Modal>
   );
 }

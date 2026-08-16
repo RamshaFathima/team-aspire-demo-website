@@ -100,6 +100,52 @@ export function Field({ label, children }: { label: string; children: React.Reac
   );
 }
 
+/** Danger confirmation dialog for irreversible actions (deletes etc.). */
+export function ConfirmDialog({
+  open,
+  title,
+  message,
+  confirmLabel = "Delete",
+  busy,
+  error,
+  onConfirm,
+  onCancel,
+}: {
+  open: boolean;
+  title: string;
+  message: string;
+  confirmLabel?: string;
+  busy?: boolean;
+  error?: unknown;
+  onConfirm: () => void;
+  onCancel: () => void;
+}) {
+  return (
+    <Dialog open={open} onOpenChange={(next) => !next && onCancel()}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>{title}</DialogTitle>
+          <DialogDescription>{message}</DialogDescription>
+        </DialogHeader>
+        <DialogBody>
+          <p className="rounded-lg border border-destructive/20 bg-destructive/5 px-3 py-2 text-xs text-destructive">
+            This cannot be undone. The action is recorded in the activity log.
+          </p>
+          <ErrorNote error={error} />
+        </DialogBody>
+        <DialogFooter>
+          <button className="btn-secondary" onClick={onCancel} disabled={busy}>
+            Cancel
+          </button>
+          <button className="btn-danger !border-destructive !bg-destructive !text-destructive-foreground hover:!brightness-110" onClick={onConfirm} disabled={busy}>
+            {busy ? "Working…" : confirmLabel}
+          </button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
 export function StatCard({
   label,
   value,

@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { BookOpen, Loader2 } from "lucide-react";
+import { BookOpen, Loader2, Trash2 } from "lucide-react";
 import { api, can } from "@/lib/api";
-import { Badge, EmptyState, ErrorNote, Field, Modal, PageHeader, TableSkeleton } from "@/components/ui";
+import { Badge, ConfirmDialog, EmptyState, ErrorNote, Field, Modal, PageHeader, TableSkeleton } from "@/components/ui";
 import { Select } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card } from "@/components/ui/card";
@@ -34,6 +34,7 @@ export default function Courses() {
   const qc = useQueryClient();
   const [editing, setEditing] = useState<Course | null>(null);
   const [createOpen, setCreateOpen] = useState(false);
+  const [deleting, setDeleting] = useState<Course | null>(null);
 
   const { data, isLoading } = useQuery({
     queryKey: ["courses"],
@@ -44,6 +45,14 @@ export default function Courses() {
     mutationFn: ({ id, status }: { id: string; status: string }) =>
       api(`/lms/courses/${id}/status`, { method: "POST", body: { status } }),
     onSuccess: () => qc.invalidateQueries({ queryKey: ["courses"] }),
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (id: string) => api(`/lms/courses/${id}`, { method: "DELETE" }),
+    onSuccess: () => {
+      setDeleting(null);
+      qc.invalidateQueries({ queryKey: ["courses"] });
+    },
   });
 
   const refresh = () => qc.invalidateQueries({ queryKey: ["courses"] });
@@ -101,6 +110,13 @@ export default function Courses() {
                   <button className="btn-secondary ml-auto !px-3 !py-1.5 text-xs" onClick={() => setEditing(c)}>
                     Edit details
                   </button>
+                  <button
+                    className="rounded-md p-1.5 text-muted-foreground/50 transition hover:bg-destructive/10 hover:text-destructive"
+                    title="Delete course"
+                    onClick={() => setDeleting(c)}
+                  >
+                    <Trash2 className="h-3.5 w-3.5" />
+                  </button>
                 </div>
               )}
             </Card>
@@ -111,6 +127,17 @@ export default function Courses() {
       {(createOpen || editing) && (
         <CourseModal course={editing} onClose={() => { setCreateOpen(false); setEditing(null); }} onDone={refresh} />
       )}
+
+      <ConfirmDialog
+        open={!!deleting}
+        title={`Delete “${deleting?.title}”?`}
+        message="Removes the course with ALL its cohorts, sessions, enrollments and attendance. Certificates already issued keep their records."
+        confirmLabel="Delete course"
+        busy={deleteMutation.isPending}
+        error={deleteMutation.error}
+        onConfirm={() => deleting && deleteMutation.mutate(deleting.id)}
+        onCancel={() => setDeleting(null)}
+      />
     </>
   );
 }

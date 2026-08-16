@@ -1,8 +1,11 @@
 const API_URL = process.env.API_URL ?? "http://localhost:8000";
 
-/** Server-side fetch that unwraps the backend's { status, data, message } envelope. */
-export async function api<T>(path: string, revalidate = 30): Promise<T> {
-  const res = await fetch(`${API_URL}/api/v1${path}`, { next: { revalidate } });
+/**
+ * Server-side fetch that unwraps the backend's { status, data, message } envelope.
+ * Always no-store: admin changes must reflect on the site immediately.
+ */
+export async function api<T>(path: string): Promise<T> {
+  const res = await fetch(`${API_URL}/api/v1${path}`, { cache: "no-store" });
   if (!res.ok) {
     throw new Error(`API ${path} failed with ${res.status}`);
   }
@@ -10,9 +13,9 @@ export async function api<T>(path: string, revalidate = 30): Promise<T> {
   return json.data as T;
 }
 
-export async function apiOrNull<T>(path: string, revalidate = 30): Promise<T | null> {
+export async function apiOrNull<T>(path: string): Promise<T | null> {
   try {
-    return await api<T>(path, revalidate);
+    return await api<T>(path);
   } catch {
     return null;
   }

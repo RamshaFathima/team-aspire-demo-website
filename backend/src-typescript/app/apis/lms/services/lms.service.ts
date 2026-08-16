@@ -114,6 +114,28 @@ class LmsService {
         return { ok: true };
     }
 
+    async removeCourse(id: string) {
+        const course = await Course.findByPk(id);
+        if (!course) throw new ValidationError('Course not found', StatusCodes.NOT_FOUND);
+        await course.destroy(); // cascades cohorts, sessions, enrollments, attendance
+        return { ok: true, title: course.title };
+    }
+
+    async removeCohort(id: string) {
+        const cohort = await Cohort.findByPk(id);
+        if (!cohort) throw new ValidationError('Cohort not found', StatusCodes.NOT_FOUND);
+        await cohort.destroy();
+        return { ok: true, name: cohort.name };
+    }
+
+    async removeSession(userCtx: IUserContext, id: string) {
+        const session = await ClassSession.findByPk(id);
+        if (!session) throw new ValidationError('Session not found', StatusCodes.NOT_FOUND);
+        await this.assertCohortAccess(userCtx, session.cohortId);
+        await session.destroy();
+        return { ok: true, title: session.title };
+    }
+
     // ── Cohorts ──────────────────────────────────────────────────
     async listCohorts(userCtx: IUserContext, query: { courseId?: string; status?: string }) {
         const where: any = {};

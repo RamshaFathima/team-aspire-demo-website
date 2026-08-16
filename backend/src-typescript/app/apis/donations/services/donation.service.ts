@@ -179,6 +179,13 @@ class DonationService {
         await campaign.update(patch);
         return campaign;
     }
+
+    async removeCampaign(id: string) {
+        const campaign = await Campaign.findByPk(id);
+        if (!campaign) throw new ValidationError('Campaign not found', StatusCodes.NOT_FOUND);
+        await campaign.destroy(); // donations keep their rows (campaign link nulled)
+        return { ok: true, title: campaign.title };
+    }
 }
 
 export default new DonationService();

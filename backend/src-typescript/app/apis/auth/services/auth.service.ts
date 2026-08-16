@@ -21,6 +21,7 @@ class AuthService {
             fullName: user.fullName,
             phone: user.phone,
             status: user.status,
+            signatureUrl: user.signatureUrl ?? null,
             roles: ctx?.roles ?? [],
             permissions: ctx?.permissions ?? [],
             createdAt: user.createdAt,
@@ -124,6 +125,7 @@ class AuthService {
         await user.update({
             ...(data.fullName !== undefined && { fullName: data.fullName }),
             ...(data.phone !== undefined && { phone: data.phone }),
+            ...(data.signatureUrl !== undefined && { signatureUrl: data.signatureUrl }),
         });
         await invalidateUserContext(userId);
         return this.me(userId);

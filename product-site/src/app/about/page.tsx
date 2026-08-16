@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { apiOrNull, type CmsPage } from "@/lib/api";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const page = await apiOrNull<CmsPage>("/public/pages/about", 60);
+  const page = await apiOrNull<CmsPage>("/public/pages/about");
   return {
     title: page?.seo?.title ?? "About",
     description: page?.seo?.description ?? undefined,
@@ -11,7 +11,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function AboutPage() {
-  const page = await apiOrNull<CmsPage>("/public/pages/about", 60);
+  const page = await apiOrNull<CmsPage>("/public/pages/about");
 
   if (!page) {
     return (

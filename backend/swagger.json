@@ -682,6 +682,11 @@
                   "minLength": 7,
                   "maxLength": 20,
                   "nullable": true
+                },
+                "signatureUrl": {
+                  "type": "string",
+                  "maxLength": 400000,
+                  "nullable": true
                 }
               },
               "additionalProperties": false
@@ -808,6 +813,2700 @@
           }
         ],
         "operationId": "ChangePasswordController"
+      }
+    },
+    "/api/v1/projects/{id}": {
+      "delete": {
+        "tags": [
+          "Projects"
+        ],
+        "summary": "Delete project",
+        "description": "Delete project (irreversible)",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "success"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Success"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Bad Request"
+                },
+                "errors": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Not Found"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Internal Server Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          }
+        ],
+        "operationId": "DeletionController"
+      },
+      "get": {
+        "tags": [
+          "Projects"
+        ],
+        "summary": "Get project (admin)",
+        "description": "Project with updates",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "success"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Success"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Bad Request"
+                },
+                "errors": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Not Found"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Internal Server Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          }
+        ],
+        "operationId": "GetProjectController"
+      },
+      "patch": {
+        "tags": [
+          "Projects"
+        ],
+        "summary": "Update project",
+        "description": "Edit project fields",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "success"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Success"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Bad Request"
+                },
+                "errors": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Not Found"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Internal Server Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": "string",
+                  "minLength": 3,
+                  "maxLength": 160
+                },
+                "slug": {
+                  "type": "string",
+                  "minLength": 2,
+                  "maxLength": 160
+                },
+                "summary": {
+                  "type": "string",
+                  "maxLength": 600,
+                  "nullable": true
+                },
+                "description": {
+                  "type": "string",
+                  "nullable": true
+                },
+                "category": {
+                  "type": "string",
+                  "maxLength": 60,
+                  "nullable": true
+                },
+                "location": {
+                  "type": "string",
+                  "maxLength": 160,
+                  "nullable": true
+                },
+                "goalAmount": {
+                  "type": "number",
+                  "format": "float",
+                  "minimum": 1,
+                  "nullable": true
+                },
+                "impactStats": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "label": {
+                        "type": "string"
+                      },
+                      "value": {
+                        "type": "string"
+                      }
+                    },
+                    "additionalProperties": false
+                  }
+                },
+                "coverImage": {
+                  "type": "string",
+                  "nullable": true
+                },
+                "featured": {
+                  "type": "boolean"
+                },
+                "startedAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "nullable": true
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        ],
+        "operationId": "UpdateProjectController"
+      }
+    },
+    "/api/v1/donations/campaigns/{id}": {
+      "delete": {
+        "tags": [
+          "Campaigns"
+        ],
+        "summary": "Delete campaign",
+        "description": "Delete campaign (irreversible)",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "success"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Success"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Bad Request"
+                },
+                "errors": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Not Found"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Internal Server Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          }
+        ],
+        "operationId": "DeletionController"
+      },
+      "patch": {
+        "tags": [
+          "Campaigns"
+        ],
+        "summary": "Update campaign",
+        "description": "Edit campaign fields",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "success"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Success"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Bad Request"
+                },
+                "errors": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Not Found"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Internal Server Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": "string",
+                  "minLength": 3,
+                  "maxLength": 160
+                },
+                "slug": {
+                  "type": "string",
+                  "maxLength": 160
+                },
+                "description": {
+                  "type": "string",
+                  "nullable": true
+                },
+                "projectId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "nullable": true
+                },
+                "goalAmount": {
+                  "type": "number",
+                  "format": "float",
+                  "minimum": 1,
+                  "nullable": true
+                },
+                "status": {
+                  "type": "string",
+                  "enum": [
+                    "active",
+                    "completed",
+                    "archived"
+                  ]
+                },
+                "startsAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "nullable": true
+                },
+                "endsAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "nullable": true
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        ],
+        "operationId": "UpdateCampaignController"
+      }
+    },
+    "/api/v1/lms/courses/{id}": {
+      "delete": {
+        "tags": [
+          "LMS"
+        ],
+        "summary": "Delete course",
+        "description": "Delete course (irreversible)",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "success"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Success"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Bad Request"
+                },
+                "errors": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Not Found"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Internal Server Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          }
+        ],
+        "operationId": "DeletionController"
+      },
+      "get": {
+        "tags": [
+          "LMS"
+        ],
+        "summary": "Get course",
+        "description": "Course with curriculum + cohorts",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "success"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Success"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Bad Request"
+                },
+                "errors": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Not Found"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Internal Server Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          }
+        ],
+        "operationId": "GetCourseController"
+      },
+      "patch": {
+        "tags": [
+          "LMS"
+        ],
+        "summary": "Update course",
+        "description": "Edit course fields",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "success"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Success"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Bad Request"
+                },
+                "errors": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Not Found"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Internal Server Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": "string",
+                  "minLength": 3,
+                  "maxLength": 160
+                },
+                "slug": {
+                  "type": "string",
+                  "maxLength": 160
+                },
+                "summary": {
+                  "type": "string",
+                  "maxLength": 600,
+                  "nullable": true
+                },
+                "description": {
+                  "type": "string",
+                  "nullable": true
+                },
+                "category": {
+                  "type": "string",
+                  "maxLength": 60,
+                  "nullable": true
+                },
+                "level": {
+                  "type": "string",
+                  "maxLength": 30,
+                  "nullable": true
+                },
+                "coverImage": {
+                  "type": "string",
+                  "nullable": true
+                },
+                "durationWeeks": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "nullable": true
+                },
+                "capacity": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "nullable": true
+                },
+                "isOnline": {
+                  "type": "boolean"
+                },
+                "meetingPlatform": {
+                  "type": "string",
+                  "maxLength": 60,
+                  "nullable": true
+                },
+                "certificateEnabled": {
+                  "type": "boolean"
+                },
+                "minAttendancePct": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 100,
+                  "nullable": true
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        ],
+        "operationId": "UpdateCourseController"
+      }
+    },
+    "/api/v1/lms/cohorts/{id}": {
+      "delete": {
+        "tags": [
+          "LMS"
+        ],
+        "summary": "Delete cohort",
+        "description": "Delete cohort (irreversible)",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "success"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Success"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Bad Request"
+                },
+                "errors": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Not Found"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Internal Server Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          }
+        ],
+        "operationId": "DeletionController"
+      },
+      "get": {
+        "tags": [
+          "LMS"
+        ],
+        "summary": "Get cohort",
+        "description": "Cohort with roster, sessions, teachers",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "success"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Success"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Bad Request"
+                },
+                "errors": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Not Found"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Internal Server Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          }
+        ],
+        "operationId": "GetCohortController"
+      },
+      "patch": {
+        "tags": [
+          "LMS"
+        ],
+        "summary": "Update cohort",
+        "description": "Edit batch details",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "success"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Success"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Bad Request"
+                },
+                "errors": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Not Found"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Internal Server Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "minLength": 2,
+                  "maxLength": 120
+                },
+                "code": {
+                  "type": "string",
+                  "minLength": 2,
+                  "maxLength": 60
+                },
+                "startsOn": {
+                  "type": "string",
+                  "format": "date-time",
+                  "nullable": true
+                },
+                "endsOn": {
+                  "type": "string",
+                  "format": "date-time",
+                  "nullable": true
+                },
+                "scheduleNote": {
+                  "type": "string",
+                  "maxLength": 200,
+                  "nullable": true
+                },
+                "status": {
+                  "type": "string",
+                  "enum": [
+                    "upcoming",
+                    "active",
+                    "completed"
+                  ]
+                },
+                "capacity": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "nullable": true
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        ],
+        "operationId": "UpdateCohortController"
+      }
+    },
+    "/api/v1/lms/sessions/{id}": {
+      "delete": {
+        "tags": [
+          "LMS"
+        ],
+        "summary": "Delete class session",
+        "description": "Delete class session (irreversible)",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "success"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Success"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Bad Request"
+                },
+                "errors": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Not Found"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Internal Server Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          }
+        ],
+        "operationId": "DeletionController"
+      },
+      "patch": {
+        "tags": [
+          "LMS"
+        ],
+        "summary": "Update class",
+        "description": "Edit/cancel/complete a session",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "success"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Success"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Bad Request"
+                },
+                "errors": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Not Found"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Internal Server Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": "string",
+                  "minLength": 2,
+                  "maxLength": 160
+                },
+                "topic": {
+                  "type": "string",
+                  "maxLength": 200,
+                  "nullable": true
+                },
+                "startsAt": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "endsAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "nullable": true
+                },
+                "location": {
+                  "type": "string",
+                  "maxLength": 160,
+                  "nullable": true
+                },
+                "meetingUrl": {
+                  "type": "string",
+                  "nullable": true
+                },
+                "teacherId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "nullable": true
+                },
+                "status": {
+                  "type": "string",
+                  "enum": [
+                    "scheduled",
+                    "completed",
+                    "cancelled"
+                  ]
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        ],
+        "operationId": "UpdateSessionController"
+      }
+    },
+    "/api/v1/crm/contacts/{id}": {
+      "delete": {
+        "tags": [
+          "CRM"
+        ],
+        "summary": "Delete contact",
+        "description": "Delete contact (irreversible)",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "success"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Success"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Bad Request"
+                },
+                "errors": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Not Found"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Internal Server Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          }
+        ],
+        "operationId": "DeletionController"
+      },
+      "get": {
+        "tags": [
+          "CRM"
+        ],
+        "summary": "Person 360",
+        "description": "Contact + donations + courses + certificates + timeline",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "success"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Success"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Bad Request"
+                },
+                "errors": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Not Found"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Internal Server Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          }
+        ],
+        "operationId": "GetContact360Controller"
+      },
+      "patch": {
+        "tags": [
+          "CRM"
+        ],
+        "summary": "Update contact",
+        "description": "Edit contact fields/tags/notes",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "success"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Success"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Bad Request"
+                },
+                "errors": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Not Found"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Internal Server Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "fullName": {
+                  "type": "string",
+                  "minLength": 2,
+                  "maxLength": 120
+                },
+                "email": {
+                  "type": "string",
+                  "format": "email",
+                  "nullable": true
+                },
+                "phone": {
+                  "type": "string",
+                  "maxLength": 20,
+                  "nullable": true
+                },
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "donor",
+                    "volunteer",
+                    "student",
+                    "teacher",
+                    "partner",
+                    "other"
+                  ]
+                },
+                "tags": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "maxLength": 40
+                  }
+                },
+                "notes": {
+                  "type": "string",
+                  "maxLength": 2000,
+                  "nullable": true
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        ],
+        "operationId": "UpdateContactController"
+      }
+    },
+    "/api/v1/cms/pages/{id}": {
+      "delete": {
+        "tags": [
+          "CMS"
+        ],
+        "summary": "Delete page",
+        "description": "Delete page (irreversible)",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "success"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Success"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Bad Request"
+                },
+                "errors": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Not Found"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Internal Server Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          }
+        ],
+        "operationId": "DeletionController"
+      },
+      "get": {
+        "tags": [
+          "CMS"
+        ],
+        "summary": "Get page",
+        "description": "Page with blocks",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "success"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Success"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Bad Request"
+                },
+                "errors": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Not Found"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Internal Server Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          }
+        ],
+        "operationId": "GetPageController"
+      },
+      "patch": {
+        "tags": [
+          "CMS"
+        ],
+        "summary": "Update page",
+        "description": "Edit title/slug/blocks/SEO",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "success"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Success"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Bad Request"
+                },
+                "errors": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Not Found"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Internal Server Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": "string",
+                  "minLength": 2,
+                  "maxLength": 160
+                },
+                "slug": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 160
+                },
+                "blocks": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "enum": [
+                          "hero",
+                          "richText",
+                          "stats",
+                          "cta",
+                          "faq"
+                        ]
+                      },
+                      "heading": {
+                        "type": "string"
+                      },
+                      "subheading": {
+                        "type": "string"
+                      },
+                      "body": {
+                        "type": "string"
+                      },
+                      "ctaLabel": {
+                        "type": "string"
+                      },
+                      "ctaHref": {
+                        "type": "string"
+                      },
+                      "image": {
+                        "type": "string"
+                      },
+                      "items": {
+                        "type": "array",
+                        "items": {}
+                      }
+                    },
+                    "required": [
+                      "type"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "seo": {
+                  "type": "object",
+                  "properties": {
+                    "title": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        ],
+        "operationId": "UpdatePageController"
+      }
+    },
+    "/api/v1/users/{id}": {
+      "delete": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Delete user account",
+        "description": "Delete user account (irreversible)",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "success"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Success"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Bad Request"
+                },
+                "errors": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Not Found"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Internal Server Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          }
+        ],
+        "operationId": "DeletionController"
+      },
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get user",
+        "description": "User detail with roles",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "success"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Success"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Bad Request"
+                },
+                "errors": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Not Found"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Internal Server Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          }
+        ],
+        "operationId": "GetUserController"
+      },
+      "patch": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Update user",
+        "description": "Update profile/status/password",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "success"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Success"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Bad Request"
+                },
+                "errors": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Not Found"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Internal Server Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "fullName": {
+                  "type": "string",
+                  "minLength": 2,
+                  "maxLength": 120
+                },
+                "phone": {
+                  "type": "string",
+                  "maxLength": 20,
+                  "nullable": true
+                },
+                "status": {
+                  "type": "string",
+                  "enum": [
+                    "active",
+                    "suspended"
+                  ]
+                },
+                "password": {
+                  "type": "string",
+                  "minLength": 8,
+                  "maxLength": 100
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        ],
+        "operationId": "UpdateUserController"
       }
     },
     "/api/v1/donations/campaigns/list": {
@@ -1055,162 +3754,6 @@
           }
         ],
         "operationId": "CreateCampaignController"
-      }
-    },
-    "/api/v1/donations/campaigns/{id}": {
-      "patch": {
-        "tags": [
-          "Campaigns"
-        ],
-        "summary": "Update campaign",
-        "description": "Edit campaign fields",
-        "produces": [
-          "application/json"
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "status": {
-                  "type": "string",
-                  "example": "success"
-                },
-                "data": {
-                  "type": "object"
-                },
-                "message": {
-                  "type": "string",
-                  "example": "Success"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "status": {
-                  "type": "string",
-                  "example": "error"
-                },
-                "data": {
-                  "type": "object"
-                },
-                "message": {
-                  "type": "string",
-                  "example": "Bad Request"
-                },
-                "errors": {
-                  "type": "object"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "status": {
-                  "type": "string",
-                  "example": "error"
-                },
-                "data": {
-                  "type": "object"
-                },
-                "message": {
-                  "type": "string",
-                  "example": "Not Found"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "status": {
-                  "type": "string",
-                  "example": "error"
-                },
-                "data": {
-                  "type": "object"
-                },
-                "message": {
-                  "type": "string",
-                  "example": "Internal Server Error"
-                }
-              }
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "format": "uuid"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "title": {
-                  "type": "string",
-                  "minLength": 3,
-                  "maxLength": 160
-                },
-                "slug": {
-                  "type": "string",
-                  "maxLength": 160
-                },
-                "description": {
-                  "type": "string",
-                  "nullable": true
-                },
-                "projectId": {
-                  "type": "string",
-                  "format": "uuid",
-                  "nullable": true
-                },
-                "goalAmount": {
-                  "type": "number",
-                  "format": "float",
-                  "minimum": 1,
-                  "nullable": true
-                },
-                "status": {
-                  "type": "string",
-                  "enum": [
-                    "active",
-                    "completed",
-                    "archived"
-                  ]
-                },
-                "startsAt": {
-                  "type": "string",
-                  "format": "date-time",
-                  "nullable": true
-                },
-                "endsAt": {
-                  "type": "string",
-                  "format": "date-time",
-                  "nullable": true
-                }
-              },
-              "additionalProperties": false
-            }
-          }
-        ],
-        "operationId": "UpdateCampaignController"
       }
     },
     "/api/v1/donations": {
@@ -1962,280 +4505,6 @@
         "operationId": "CreateCourseController"
       }
     },
-    "/api/v1/lms/courses/{id}": {
-      "get": {
-        "tags": [
-          "LMS"
-        ],
-        "summary": "Get course",
-        "description": "Course with curriculum + cohorts",
-        "produces": [
-          "application/json"
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "status": {
-                  "type": "string",
-                  "example": "success"
-                },
-                "data": {
-                  "type": "object"
-                },
-                "message": {
-                  "type": "string",
-                  "example": "Success"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "status": {
-                  "type": "string",
-                  "example": "error"
-                },
-                "data": {
-                  "type": "object"
-                },
-                "message": {
-                  "type": "string",
-                  "example": "Bad Request"
-                },
-                "errors": {
-                  "type": "object"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "status": {
-                  "type": "string",
-                  "example": "error"
-                },
-                "data": {
-                  "type": "object"
-                },
-                "message": {
-                  "type": "string",
-                  "example": "Not Found"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "status": {
-                  "type": "string",
-                  "example": "error"
-                },
-                "data": {
-                  "type": "object"
-                },
-                "message": {
-                  "type": "string",
-                  "example": "Internal Server Error"
-                }
-              }
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "format": "uuid"
-          }
-        ],
-        "operationId": "GetCourseController"
-      },
-      "patch": {
-        "tags": [
-          "LMS"
-        ],
-        "summary": "Update course",
-        "description": "Edit course fields",
-        "produces": [
-          "application/json"
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "status": {
-                  "type": "string",
-                  "example": "success"
-                },
-                "data": {
-                  "type": "object"
-                },
-                "message": {
-                  "type": "string",
-                  "example": "Success"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "status": {
-                  "type": "string",
-                  "example": "error"
-                },
-                "data": {
-                  "type": "object"
-                },
-                "message": {
-                  "type": "string",
-                  "example": "Bad Request"
-                },
-                "errors": {
-                  "type": "object"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "status": {
-                  "type": "string",
-                  "example": "error"
-                },
-                "data": {
-                  "type": "object"
-                },
-                "message": {
-                  "type": "string",
-                  "example": "Not Found"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "status": {
-                  "type": "string",
-                  "example": "error"
-                },
-                "data": {
-                  "type": "object"
-                },
-                "message": {
-                  "type": "string",
-                  "example": "Internal Server Error"
-                }
-              }
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "format": "uuid"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "title": {
-                  "type": "string",
-                  "minLength": 3,
-                  "maxLength": 160
-                },
-                "slug": {
-                  "type": "string",
-                  "maxLength": 160
-                },
-                "summary": {
-                  "type": "string",
-                  "maxLength": 600,
-                  "nullable": true
-                },
-                "description": {
-                  "type": "string",
-                  "nullable": true
-                },
-                "category": {
-                  "type": "string",
-                  "maxLength": 60,
-                  "nullable": true
-                },
-                "level": {
-                  "type": "string",
-                  "maxLength": 30,
-                  "nullable": true
-                },
-                "coverImage": {
-                  "type": "string",
-                  "nullable": true
-                },
-                "durationWeeks": {
-                  "type": "integer",
-                  "minimum": 1,
-                  "nullable": true
-                },
-                "capacity": {
-                  "type": "integer",
-                  "minimum": 1,
-                  "nullable": true
-                },
-                "isOnline": {
-                  "type": "boolean"
-                },
-                "meetingPlatform": {
-                  "type": "string",
-                  "maxLength": 60,
-                  "nullable": true
-                },
-                "certificateEnabled": {
-                  "type": "boolean"
-                },
-                "minAttendancePct": {
-                  "type": "integer",
-                  "minimum": 0,
-                  "maximum": 100,
-                  "nullable": true
-                }
-              },
-              "additionalProperties": false
-            }
-          }
-        ],
-        "operationId": "UpdateCourseController"
-      }
-    },
     "/api/v1/lms/courses/{id}/status": {
       "post": {
         "tags": [
@@ -2985,259 +5254,6 @@
         "operationId": "CreateCohortController"
       }
     },
-    "/api/v1/lms/cohorts/{id}": {
-      "get": {
-        "tags": [
-          "LMS"
-        ],
-        "summary": "Get cohort",
-        "description": "Cohort with roster, sessions, teachers",
-        "produces": [
-          "application/json"
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "status": {
-                  "type": "string",
-                  "example": "success"
-                },
-                "data": {
-                  "type": "object"
-                },
-                "message": {
-                  "type": "string",
-                  "example": "Success"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "status": {
-                  "type": "string",
-                  "example": "error"
-                },
-                "data": {
-                  "type": "object"
-                },
-                "message": {
-                  "type": "string",
-                  "example": "Bad Request"
-                },
-                "errors": {
-                  "type": "object"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "status": {
-                  "type": "string",
-                  "example": "error"
-                },
-                "data": {
-                  "type": "object"
-                },
-                "message": {
-                  "type": "string",
-                  "example": "Not Found"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "status": {
-                  "type": "string",
-                  "example": "error"
-                },
-                "data": {
-                  "type": "object"
-                },
-                "message": {
-                  "type": "string",
-                  "example": "Internal Server Error"
-                }
-              }
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "format": "uuid"
-          }
-        ],
-        "operationId": "GetCohortController"
-      },
-      "patch": {
-        "tags": [
-          "LMS"
-        ],
-        "summary": "Update cohort",
-        "description": "Edit batch details",
-        "produces": [
-          "application/json"
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "status": {
-                  "type": "string",
-                  "example": "success"
-                },
-                "data": {
-                  "type": "object"
-                },
-                "message": {
-                  "type": "string",
-                  "example": "Success"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "status": {
-                  "type": "string",
-                  "example": "error"
-                },
-                "data": {
-                  "type": "object"
-                },
-                "message": {
-                  "type": "string",
-                  "example": "Bad Request"
-                },
-                "errors": {
-                  "type": "object"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "status": {
-                  "type": "string",
-                  "example": "error"
-                },
-                "data": {
-                  "type": "object"
-                },
-                "message": {
-                  "type": "string",
-                  "example": "Not Found"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "status": {
-                  "type": "string",
-                  "example": "error"
-                },
-                "data": {
-                  "type": "object"
-                },
-                "message": {
-                  "type": "string",
-                  "example": "Internal Server Error"
-                }
-              }
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "format": "uuid"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "minLength": 2,
-                  "maxLength": 120
-                },
-                "code": {
-                  "type": "string",
-                  "minLength": 2,
-                  "maxLength": 60
-                },
-                "startsOn": {
-                  "type": "string",
-                  "format": "date-time",
-                  "nullable": true
-                },
-                "endsOn": {
-                  "type": "string",
-                  "format": "date-time",
-                  "nullable": true
-                },
-                "scheduleNote": {
-                  "type": "string",
-                  "maxLength": 200,
-                  "nullable": true
-                },
-                "status": {
-                  "type": "string",
-                  "enum": [
-                    "upcoming",
-                    "active",
-                    "completed"
-                  ]
-                },
-                "capacity": {
-                  "type": "integer",
-                  "minimum": 1,
-                  "nullable": true
-                }
-              },
-              "additionalProperties": false
-            }
-          }
-        ],
-        "operationId": "UpdateCohortController"
-      }
-    },
     "/api/v1/lms/cohorts/{id}/teachers": {
       "post": {
         "tags": [
@@ -3872,161 +5888,6 @@
         "operationId": "CreateSessionController"
       }
     },
-    "/api/v1/lms/sessions/{id}": {
-      "patch": {
-        "tags": [
-          "LMS"
-        ],
-        "summary": "Update class",
-        "description": "Edit/cancel/complete a session",
-        "produces": [
-          "application/json"
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "status": {
-                  "type": "string",
-                  "example": "success"
-                },
-                "data": {
-                  "type": "object"
-                },
-                "message": {
-                  "type": "string",
-                  "example": "Success"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "status": {
-                  "type": "string",
-                  "example": "error"
-                },
-                "data": {
-                  "type": "object"
-                },
-                "message": {
-                  "type": "string",
-                  "example": "Bad Request"
-                },
-                "errors": {
-                  "type": "object"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "status": {
-                  "type": "string",
-                  "example": "error"
-                },
-                "data": {
-                  "type": "object"
-                },
-                "message": {
-                  "type": "string",
-                  "example": "Not Found"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "status": {
-                  "type": "string",
-                  "example": "error"
-                },
-                "data": {
-                  "type": "object"
-                },
-                "message": {
-                  "type": "string",
-                  "example": "Internal Server Error"
-                }
-              }
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "format": "uuid"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "title": {
-                  "type": "string",
-                  "minLength": 2,
-                  "maxLength": 160
-                },
-                "topic": {
-                  "type": "string",
-                  "maxLength": 200,
-                  "nullable": true
-                },
-                "startsAt": {
-                  "type": "string",
-                  "format": "date-time"
-                },
-                "endsAt": {
-                  "type": "string",
-                  "format": "date-time",
-                  "nullable": true
-                },
-                "location": {
-                  "type": "string",
-                  "maxLength": 160,
-                  "nullable": true
-                },
-                "meetingUrl": {
-                  "type": "string",
-                  "nullable": true
-                },
-                "teacherId": {
-                  "type": "string",
-                  "format": "uuid",
-                  "nullable": true
-                },
-                "status": {
-                  "type": "string",
-                  "enum": [
-                    "scheduled",
-                    "completed",
-                    "cancelled"
-                  ]
-                }
-              },
-              "additionalProperties": false
-            }
-          }
-        ],
-        "operationId": "UpdateSessionController"
-      }
-    },
     "/api/v1/lms/sessions/{id}/attendance": {
       "get": {
         "tags": [
@@ -4652,6 +6513,109 @@
         "operationId": "RevokeCertificateController"
       }
     },
+    "/api/v1/certificates/{id}/reinstate": {
+      "post": {
+        "tags": [
+          "Certificates"
+        ],
+        "summary": "Reinstate certificate",
+        "description": "Bring a revoked certificate back into force",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "success"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Success"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Bad Request"
+                },
+                "errors": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Not Found"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "example": "error"
+                },
+                "data": {
+                  "type": "object"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Internal Server Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          }
+        ],
+        "operationId": "ReinstateCertificateController"
+      }
+    },
     "/api/v1/certificates/eligibility/{cohortId}": {
       "get": {
         "tags": [
@@ -5022,287 +6986,6 @@
           }
         ],
         "operationId": "CreatePageController"
-      }
-    },
-    "/api/v1/cms/pages/{id}": {
-      "get": {
-        "tags": [
-          "CMS"
-        ],
-        "summary": "Get page",
-        "description": "Page with blocks",
-        "produces": [
-          "application/json"
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "status": {
-                  "type": "string",
-                  "example": "success"
-                },
-                "data": {
-                  "type": "object"
-                },
-                "message": {
-                  "type": "string",
-                  "example": "Success"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "status": {
-                  "type": "string",
-                  "example": "error"
-                },
-                "data": {
-                  "type": "object"
-                },
-                "message": {
-                  "type": "string",
-                  "example": "Bad Request"
-                },
-                "errors": {
-                  "type": "object"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "status": {
-                  "type": "string",
-                  "example": "error"
-                },
-                "data": {
-                  "type": "object"
-                },
-                "message": {
-                  "type": "string",
-                  "example": "Not Found"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "status": {
-                  "type": "string",
-                  "example": "error"
-                },
-                "data": {
-                  "type": "object"
-                },
-                "message": {
-                  "type": "string",
-                  "example": "Internal Server Error"
-                }
-              }
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "format": "uuid"
-          }
-        ],
-        "operationId": "GetPageController"
-      },
-      "patch": {
-        "tags": [
-          "CMS"
-        ],
-        "summary": "Update page",
-        "description": "Edit title/slug/blocks/SEO",
-        "produces": [
-          "application/json"
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "status": {
-                  "type": "string",
-                  "example": "success"
-                },
-                "data": {
-                  "type": "object"
-                },
-                "message": {
-                  "type": "string",
-                  "example": "Success"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "status": {
-                  "type": "string",
-                  "example": "error"
-                },
-                "data": {
-                  "type": "object"
-                },
-                "message": {
-                  "type": "string",
-                  "example": "Bad Request"
-                },
-                "errors": {
-                  "type": "object"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "status": {
-                  "type": "string",
-                  "example": "error"
-                },
-                "data": {
-                  "type": "object"
-                },
-                "message": {
-                  "type": "string",
-                  "example": "Not Found"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "status": {
-                  "type": "string",
-                  "example": "error"
-                },
-                "data": {
-                  "type": "object"
-                },
-                "message": {
-                  "type": "string",
-                  "example": "Internal Server Error"
-                }
-              }
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "format": "uuid"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "title": {
-                  "type": "string",
-                  "minLength": 2,
-                  "maxLength": 160
-                },
-                "slug": {
-                  "type": "string",
-                  "minLength": 1,
-                  "maxLength": 160
-                },
-                "blocks": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "type": {
-                        "type": "string",
-                        "enum": [
-                          "hero",
-                          "richText",
-                          "stats",
-                          "cta",
-                          "faq"
-                        ]
-                      },
-                      "heading": {
-                        "type": "string"
-                      },
-                      "subheading": {
-                        "type": "string"
-                      },
-                      "body": {
-                        "type": "string"
-                      },
-                      "ctaLabel": {
-                        "type": "string"
-                      },
-                      "ctaHref": {
-                        "type": "string"
-                      },
-                      "image": {
-                        "type": "string"
-                      },
-                      "items": {
-                        "type": "array",
-                        "items": {}
-                      }
-                    },
-                    "required": [
-                      "type"
-                    ],
-                    "additionalProperties": false
-                  }
-                },
-                "seo": {
-                  "type": "object",
-                  "properties": {
-                    "title": {
-                      "type": "string"
-                    },
-                    "description": {
-                      "type": "string"
-                    }
-                  },
-                  "additionalProperties": false
-                }
-              },
-              "additionalProperties": false
-            }
-          }
-        ],
-        "operationId": "UpdatePageController"
       }
     },
     "/api/v1/cms/pages/{id}/publish": {
@@ -5689,259 +7372,6 @@
           }
         ],
         "operationId": "CreateContactController"
-      }
-    },
-    "/api/v1/crm/contacts/{id}": {
-      "get": {
-        "tags": [
-          "CRM"
-        ],
-        "summary": "Person 360",
-        "description": "Contact + donations + courses + certificates + timeline",
-        "produces": [
-          "application/json"
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "status": {
-                  "type": "string",
-                  "example": "success"
-                },
-                "data": {
-                  "type": "object"
-                },
-                "message": {
-                  "type": "string",
-                  "example": "Success"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "status": {
-                  "type": "string",
-                  "example": "error"
-                },
-                "data": {
-                  "type": "object"
-                },
-                "message": {
-                  "type": "string",
-                  "example": "Bad Request"
-                },
-                "errors": {
-                  "type": "object"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "status": {
-                  "type": "string",
-                  "example": "error"
-                },
-                "data": {
-                  "type": "object"
-                },
-                "message": {
-                  "type": "string",
-                  "example": "Not Found"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "status": {
-                  "type": "string",
-                  "example": "error"
-                },
-                "data": {
-                  "type": "object"
-                },
-                "message": {
-                  "type": "string",
-                  "example": "Internal Server Error"
-                }
-              }
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "format": "uuid"
-          }
-        ],
-        "operationId": "GetContact360Controller"
-      },
-      "patch": {
-        "tags": [
-          "CRM"
-        ],
-        "summary": "Update contact",
-        "description": "Edit contact fields/tags/notes",
-        "produces": [
-          "application/json"
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "status": {
-                  "type": "string",
-                  "example": "success"
-                },
-                "data": {
-                  "type": "object"
-                },
-                "message": {
-                  "type": "string",
-                  "example": "Success"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "status": {
-                  "type": "string",
-                  "example": "error"
-                },
-                "data": {
-                  "type": "object"
-                },
-                "message": {
-                  "type": "string",
-                  "example": "Bad Request"
-                },
-                "errors": {
-                  "type": "object"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "status": {
-                  "type": "string",
-                  "example": "error"
-                },
-                "data": {
-                  "type": "object"
-                },
-                "message": {
-                  "type": "string",
-                  "example": "Not Found"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "status": {
-                  "type": "string",
-                  "example": "error"
-                },
-                "data": {
-                  "type": "object"
-                },
-                "message": {
-                  "type": "string",
-                  "example": "Internal Server Error"
-                }
-              }
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "format": "uuid"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "fullName": {
-                  "type": "string",
-                  "minLength": 2,
-                  "maxLength": 120
-                },
-                "email": {
-                  "type": "string",
-                  "format": "email",
-                  "nullable": true
-                },
-                "phone": {
-                  "type": "string",
-                  "maxLength": 20,
-                  "nullable": true
-                },
-                "type": {
-                  "type": "string",
-                  "enum": [
-                    "donor",
-                    "volunteer",
-                    "student",
-                    "teacher",
-                    "partner",
-                    "other"
-                  ]
-                },
-                "tags": {
-                  "type": "array",
-                  "items": {
-                    "type": "string",
-                    "maxLength": 40
-                  }
-                },
-                "notes": {
-                  "type": "string",
-                  "maxLength": 2000,
-                  "nullable": true
-                }
-              },
-              "additionalProperties": false
-            }
-          }
-        ],
-        "operationId": "UpdateContactController"
       }
     },
     "/api/v1/crm/contacts/{id}/interactions": {
@@ -7009,283 +8439,6 @@
           }
         ],
         "operationId": "CreateProjectController"
-      }
-    },
-    "/api/v1/projects/{id}": {
-      "get": {
-        "tags": [
-          "Projects"
-        ],
-        "summary": "Get project (admin)",
-        "description": "Project with updates",
-        "produces": [
-          "application/json"
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "status": {
-                  "type": "string",
-                  "example": "success"
-                },
-                "data": {
-                  "type": "object"
-                },
-                "message": {
-                  "type": "string",
-                  "example": "Success"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "status": {
-                  "type": "string",
-                  "example": "error"
-                },
-                "data": {
-                  "type": "object"
-                },
-                "message": {
-                  "type": "string",
-                  "example": "Bad Request"
-                },
-                "errors": {
-                  "type": "object"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "status": {
-                  "type": "string",
-                  "example": "error"
-                },
-                "data": {
-                  "type": "object"
-                },
-                "message": {
-                  "type": "string",
-                  "example": "Not Found"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "status": {
-                  "type": "string",
-                  "example": "error"
-                },
-                "data": {
-                  "type": "object"
-                },
-                "message": {
-                  "type": "string",
-                  "example": "Internal Server Error"
-                }
-              }
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "format": "uuid"
-          }
-        ],
-        "operationId": "GetProjectController"
-      },
-      "patch": {
-        "tags": [
-          "Projects"
-        ],
-        "summary": "Update project",
-        "description": "Edit project fields",
-        "produces": [
-          "application/json"
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "status": {
-                  "type": "string",
-                  "example": "success"
-                },
-                "data": {
-                  "type": "object"
-                },
-                "message": {
-                  "type": "string",
-                  "example": "Success"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "status": {
-                  "type": "string",
-                  "example": "error"
-                },
-                "data": {
-                  "type": "object"
-                },
-                "message": {
-                  "type": "string",
-                  "example": "Bad Request"
-                },
-                "errors": {
-                  "type": "object"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "status": {
-                  "type": "string",
-                  "example": "error"
-                },
-                "data": {
-                  "type": "object"
-                },
-                "message": {
-                  "type": "string",
-                  "example": "Not Found"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "status": {
-                  "type": "string",
-                  "example": "error"
-                },
-                "data": {
-                  "type": "object"
-                },
-                "message": {
-                  "type": "string",
-                  "example": "Internal Server Error"
-                }
-              }
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "format": "uuid"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "title": {
-                  "type": "string",
-                  "minLength": 3,
-                  "maxLength": 160
-                },
-                "slug": {
-                  "type": "string",
-                  "minLength": 2,
-                  "maxLength": 160
-                },
-                "summary": {
-                  "type": "string",
-                  "maxLength": 600,
-                  "nullable": true
-                },
-                "description": {
-                  "type": "string",
-                  "nullable": true
-                },
-                "category": {
-                  "type": "string",
-                  "maxLength": 60,
-                  "nullable": true
-                },
-                "location": {
-                  "type": "string",
-                  "maxLength": 160,
-                  "nullable": true
-                },
-                "goalAmount": {
-                  "type": "number",
-                  "format": "float",
-                  "minimum": 1,
-                  "nullable": true
-                },
-                "impactStats": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "label": {
-                        "type": "string"
-                      },
-                      "value": {
-                        "type": "string"
-                      }
-                    },
-                    "additionalProperties": false
-                  }
-                },
-                "coverImage": {
-                  "type": "string",
-                  "nullable": true
-                },
-                "featured": {
-                  "type": "boolean"
-                },
-                "startedAt": {
-                  "type": "string",
-                  "format": "date-time",
-                  "nullable": true
-                }
-              },
-              "additionalProperties": false
-            }
-          }
-        ],
-        "operationId": "UpdateProjectController"
       }
     },
     "/api/v1/projects/{id}/status": {
@@ -10185,243 +11338,6 @@
           }
         ],
         "operationId": "CreateUserController"
-      }
-    },
-    "/api/v1/users/{id}": {
-      "get": {
-        "tags": [
-          "Users"
-        ],
-        "summary": "Get user",
-        "description": "User detail with roles",
-        "produces": [
-          "application/json"
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "status": {
-                  "type": "string",
-                  "example": "success"
-                },
-                "data": {
-                  "type": "object"
-                },
-                "message": {
-                  "type": "string",
-                  "example": "Success"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "status": {
-                  "type": "string",
-                  "example": "error"
-                },
-                "data": {
-                  "type": "object"
-                },
-                "message": {
-                  "type": "string",
-                  "example": "Bad Request"
-                },
-                "errors": {
-                  "type": "object"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "status": {
-                  "type": "string",
-                  "example": "error"
-                },
-                "data": {
-                  "type": "object"
-                },
-                "message": {
-                  "type": "string",
-                  "example": "Not Found"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "status": {
-                  "type": "string",
-                  "example": "error"
-                },
-                "data": {
-                  "type": "object"
-                },
-                "message": {
-                  "type": "string",
-                  "example": "Internal Server Error"
-                }
-              }
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "format": "uuid"
-          }
-        ],
-        "operationId": "GetUserController"
-      },
-      "patch": {
-        "tags": [
-          "Users"
-        ],
-        "summary": "Update user",
-        "description": "Update profile/status/password",
-        "produces": [
-          "application/json"
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "status": {
-                  "type": "string",
-                  "example": "success"
-                },
-                "data": {
-                  "type": "object"
-                },
-                "message": {
-                  "type": "string",
-                  "example": "Success"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "status": {
-                  "type": "string",
-                  "example": "error"
-                },
-                "data": {
-                  "type": "object"
-                },
-                "message": {
-                  "type": "string",
-                  "example": "Bad Request"
-                },
-                "errors": {
-                  "type": "object"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "status": {
-                  "type": "string",
-                  "example": "error"
-                },
-                "data": {
-                  "type": "object"
-                },
-                "message": {
-                  "type": "string",
-                  "example": "Not Found"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "status": {
-                  "type": "string",
-                  "example": "error"
-                },
-                "data": {
-                  "type": "object"
-                },
-                "message": {
-                  "type": "string",
-                  "example": "Internal Server Error"
-                }
-              }
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "format": "uuid"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "type": "object",
-              "properties": {
-                "fullName": {
-                  "type": "string",
-                  "minLength": 2,
-                  "maxLength": 120
-                },
-                "phone": {
-                  "type": "string",
-                  "maxLength": 20,
-                  "nullable": true
-                },
-                "status": {
-                  "type": "string",
-                  "enum": [
-                    "active",
-                    "suspended"
-                  ]
-                },
-                "password": {
-                  "type": "string",
-                  "minLength": 8,
-                  "maxLength": 100
-                }
-              },
-              "additionalProperties": false
-            }
-          }
-        ],
-        "operationId": "UpdateUserController"
       }
     },
     "/api/v1/users/{id}/roles": {

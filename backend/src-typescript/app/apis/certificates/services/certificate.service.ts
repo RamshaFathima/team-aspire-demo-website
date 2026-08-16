@@ -6,6 +6,7 @@ import Cohort from '../../../models/cohort.model';
 import ClassSession from '../../../models/class.session.model';
 import Enrollment from '../../../models/enrollment.model';
 import Attendance from '../../../models/attendance.model';
+import TeachingAssignment from '../../../models/teaching.assignment.model';
 import Notification from '../../../models/notification.model';
 import { ValidationError } from '../../../handlers/CustomErrorHandler';
 import { StatusCodes } from '../../../enums/StatusCodes';
@@ -64,6 +65,25 @@ class CertificateService {
         const holder = await User.findByPk(data.userId);
         if (!holder) throw new ValidationError('User not found', StatusCodes.NOT_FOUND);
 
+        // One certificate per student per course — revoked ones must be reinstated instead.
+        if (data.courseId) {
+            const existing = await Certificate.findOne({
+                where: { userId: data.userId, courseId: data.courseId },
+            });
+            if (existing?.status === 'active') {
+                throw new ValidationError(
+                    `${holder.fullName} already holds certificate ${existing.certificateNumber} for this course`,
+                    StatusCodes.CONFLICT
+                );
+            }
+            if (existing?.status === 'revoked') {
+                throw new ValidationError(
+                    `${holder.fullName} has a revoked certificate (${existing.certificateNumber}) for this course — reinstate it instead of issuing a new one`,
+                    StatusCodes.CONFLICT
+                );
+            }
+        }
+
         const certificate = await Certificate.create({
             ...data,
             certificateNumber: makeCertificateNumber(),
@@ -104,6 +124,17 @@ class CertificateService {
         return certificate;
     }
 
+    /** Bring a revoked certificate back into force (same number & code). */
+    async reinstate(id: string) {
+        const certificate = await Certificate.findByPk(id);
+        if (!certificate) throw new ValidationError('Certificate not found', StatusCodes.NOT_FOUND);
+        if (certificate.status !== 'revoked') {
+            throw new ValidationError('Only revoked certificates can be reinstated');
+        }
+        await certificate.update({ status: 'active', revokedReason: null });
+        return certificate;
+    }
+
     /** Attendance-based certificate eligibility for a cohort. */
     async eligibility(cohortId: string) {
         const cohort = await Cohort.findByPk(cohortId, { include: [Course] });
@@ -120,6 +151,14 @@ class CertificateService {
             include: [{ model: User, attributes: ['id', 'fullName'] }],
         });
 
+        const existingCerts = await Certificate.findAll({
+            where: {
+                courseId: cohort.courseId,
+                userId: { [Op.in]: roster.map((r) => r.userId) },
+            },
+        });
+        const certByUser = new Map(existingCerts.map((c) => [c.userId, c]));
+
         const students = [];
         for (const enrollment of roster) {
             let attended = 0;
@@ -133,6 +172,7 @@ class CertificateService {
                 });
             }
             const pct = sessionIds.length ? Math.round((attended / sessionIds.length) * 100) : 0;
+            const existing = certByUser.get(enrollment.userId);
             students.push({
                 userId: enrollment.userId,
                 name: enrollment.user?.fullName,
@@ -141,6 +181,9 @@ class CertificateService {
                 attended,
                 attendancePct: pct,
                 eligible: pct >= (cohort.course?.minAttendancePct ?? 80),
+                alreadyIssued: existing?.status === 'active',
+                hasRevoked: existing?.status === 'revoked',
+                certificateNumber: existing?.certificateNumber ?? null,
             });
         }
         return {
@@ -162,18 +205,37 @@ class CertificateService {
             include: [
                 { model: User, attributes: ['fullName'] },
                 { model: Course, attributes: ['title'] },
+                { model: Cohort, attributes: ['id', 'name'] },
             ],
         });
         if (!certificate) return { valid: false };
+
+        // Instructor of the cohort signs the certificate
+        let teacherName: string | null = null;
+        let teacherSignatureUrl: string | null = null;
+        if (certificate.cohortId) {
+            const assignment = await TeachingAssignment.findOne({
+                where: { cohortId: certificate.cohortId, role: 'instructor' },
+                include: [{ model: User, attributes: ['fullName', 'signatureUrl'] }],
+            });
+            teacherName = assignment?.teacher?.fullName ?? null;
+            teacherSignatureUrl = assignment?.teacher?.signatureUrl ?? null;
+        }
+
         return {
             valid:
                 certificate.status === 'active' &&
                 (!certificate.expiresAt || certificate.expiresAt > new Date()),
             status: certificate.status,
             certificateNumber: certificate.certificateNumber,
+            verificationCode: certificate.verificationCode,
             holderName: certificate.holder?.fullName,
             title: certificate.title,
+            description: certificate.description ?? null,
             courseTitle: certificate.course?.title ?? null,
+            cohortName: certificate.cohort?.name ?? null,
+            teacherName,
+            teacherSignatureUrl,
             issuedAt: certificate.issuedAt,
             expiresAt: certificate.expiresAt,
         };
