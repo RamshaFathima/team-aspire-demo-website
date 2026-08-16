@@ -277,6 +277,11 @@ function PageBuilder({ page, onClose, onDone }: { page: Page | null; onClose: ()
               <span className="text-xs text-muted-foreground">/</span>
               <input className="input" value={slug} onChange={(e) => setSlug(e.target.value)} placeholder="about" />
             </div>
+            {slug && (
+              <p className="mt-1 text-2xs text-muted-foreground">
+                Once published, live at <span className="font-mono text-primary">teamaspire.org/{slug}</span>
+              </p>
+            )}
           </Field>
         </div>
 
