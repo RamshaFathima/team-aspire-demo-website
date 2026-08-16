@@ -18,6 +18,17 @@ export class DashboardController extends MasterController<null, null, null> {
     }
 }
 
+export class AnalyticsController extends MasterController<null, null, null> {
+    static doc() {
+        return { tags: ['Platform'], summary: 'Analytics', description: 'Chart series for the dashboard' };
+    }
+
+    async restController(): Promise<ResponseBuilder> {
+        const analytics = await dashboardService.analytics();
+        return new ResponseBuilder(StatusCodes.SUCCESS, analytics, 'OK');
+    }
+}
+
 export class ListAuditLogsController extends MasterController<null, any, null> {
     static doc() {
         return { tags: ['Platform'], summary: 'Audit logs', description: 'Filterable audit trail' };

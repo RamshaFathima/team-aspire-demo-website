@@ -91,9 +91,9 @@ export default function Attendance() {
 
       {sheet && (
         <div className="card overflow-hidden">
-          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 px-5 py-3.5">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border/60 px-5 py-3.5">
             <div>
-              <span className="text-sm font-bold text-slate-700">
+              <span className="text-sm font-bold text-foreground/80">
                 {sheet.session.title} {sheet.session.topic ? `— ${sheet.session.topic}` : ""}
               </span>
               <span className="ml-2"><Badge value={sheet.session.status} /></span>
@@ -119,7 +119,7 @@ export default function Attendance() {
           <ErrorNote error={saveMutation.error ?? completeMutation.error} />
           <table className="w-full">
             <thead>
-              <tr className="border-b border-slate-100">
+              <tr className="border-b border-border/60">
                 <th className="th">Student</th>
                 <th className="th">Mark</th>
                 <th className="th">Last marked</th>
@@ -127,10 +127,10 @@ export default function Attendance() {
             </thead>
             <tbody>
               {sheet.roster.map((r) => (
-                <tr key={r.userId} className="border-b border-slate-50 last:border-0">
+                <tr key={r.userId} className="border-b border-border/40 last:border-0">
                   <td className="td">
                     <div className="font-medium">{r.name}</div>
-                    <div className="text-xs text-slate-400">{r.email}</div>
+                    <div className="text-xs text-muted-foreground/70">{r.email}</div>
                   </td>
                   <td className="td">
                     <div className="flex gap-1.5">
@@ -148,7 +148,7 @@ export default function Attendance() {
                                   : m === "late"
                                     ? "bg-amber-500 text-white"
                                     : "bg-slate-500 text-white"
-                              : "bg-slate-100 text-slate-500 hover:bg-slate-200"
+                              : "bg-muted text-muted-foreground hover:bg-muted/80"
                           }`}
                         >
                           {m}
@@ -156,11 +156,11 @@ export default function Attendance() {
                       ))}
                     </div>
                   </td>
-                  <td className="td text-xs text-slate-400">{r.markedAt ? fmtDateTime(r.markedAt) : "—"}</td>
+                  <td className="td text-xs text-muted-foreground/70">{r.markedAt ? fmtDateTime(r.markedAt) : "—"}</td>
                 </tr>
               ))}
               {sheet.roster.length === 0 && (
-                <tr><td colSpan={3} className="td py-10 text-center text-slate-400">No enrolled students in this cohort</td></tr>
+                <tr><td colSpan={3} className="td py-10 text-center text-muted-foreground/70">No enrolled students in this cohort</td></tr>
               )}
             </tbody>
           </table>

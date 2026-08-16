@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { getStoredUser, type StoredUser } from "@/lib/client-api";
+import { AspireLogo } from "@/components/AspireMark";
 
 const links = [
   { href: "/projects", label: "Our Work" },
@@ -30,13 +31,8 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-40 border-b border-cream-200 bg-cream-50/95 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
-        <Link href="/" className="flex items-center gap-2">
-          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-maroon-700 font-serif text-lg font-bold text-cream-50">
-            A
-          </span>
-          <span className="font-serif text-xl font-semibold tracking-wide text-maroon-900">
-            ASPIRE
-          </span>
+        <Link href="/" aria-label="Team Aspire home">
+          <AspireLogo />
         </Link>
 
         <nav className="hidden items-center gap-6 md:flex">

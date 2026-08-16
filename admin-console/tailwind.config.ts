@@ -1,6 +1,7 @@
 import type { Config } from "tailwindcss";
 
 export default {
+  darkMode: "class",
   content: ["./index.html", "./src/**/*.{ts,tsx}"],
   theme: {
     extend: {
@@ -17,28 +18,36 @@ export default {
         accent: { DEFAULT: "hsl(var(--accent))", foreground: "hsl(var(--accent-foreground))" },
         popover: { DEFAULT: "hsl(var(--popover))", foreground: "hsl(var(--popover-foreground))" },
         card: { DEFAULT: "hsl(var(--card))", foreground: "hsl(var(--card-foreground))" },
-        maroon: {
-          50: "#fbf3f4",
-          100: "#f6e3e6",
-          200: "#eec3c9",
-          300: "#e09aa5",
-          400: "#cd6577",
-          500: "#b03e55",
-          600: "#942c44",
-          700: "#7a2231",
-          800: "#671e2c",
-          900: "#571c28",
-          950: "#300b13",
+        // Stripe-style blurple
+        brand: {
+          50: "#f2f1ff",
+          100: "#e8e6ff",
+          200: "#d4d1ff",
+          300: "#b5aeff",
+          400: "#9184ff",
+          500: "#7a6bff",
+          600: "#635bff",
+          700: "#5147e5",
+          800: "#423bbf",
+          900: "#38339c",
+          950: "#211d6b",
         },
-        gold: { 400: "#d4b262", 500: "#c9a24b", 600: "#b08a3c" },
       },
       fontFamily: {
         sans: ["Inter", "system-ui", "sans-serif"],
+        mono: ["'JetBrains Mono'", "ui-monospace", "SFMono-Regular", "monospace"],
+      },
+      fontSize: {
+        "2xs": ["11px", "14px"],
       },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+      },
+      boxShadow: {
+        card: "0 1px 2px 0 rgb(16 24 40 / 0.05)",
+        pop: "0 12px 40px -8px rgb(16 24 40 / 0.2)",
       },
     },
   },

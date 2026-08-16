@@ -53,15 +53,15 @@ export default function Courses() {
             <div key={c.id} className="card p-5">
               <div className="flex items-start justify-between gap-3">
                 <div>
-                  <h3 className="font-bold text-slate-800">{c.title}</h3>
-                  <div className="mt-0.5 text-xs text-slate-400 capitalize">
+                  <h3 className="font-bold text-foreground/90">{c.title}</h3>
+                  <div className="mt-0.5 text-xs text-muted-foreground/70 capitalize">
                     {c.category} · {c.isOnline ? c.meetingPlatform ?? "online" : "in-person"} · {c.durationWeeks ?? "?"} wks
                     {c.certificateEnabled && ` · cert @ ${c.minAttendancePct}% att.`}
                   </div>
                 </div>
                 <Badge value={c.status} />
               </div>
-              <p className="mt-2 line-clamp-2 text-xs text-slate-500">{c.summary}</p>
+              <p className="mt-2 line-clamp-2 text-xs text-muted-foreground">{c.summary}</p>
               {can("lms.courses.manage") && (
                 <div className="mt-4 flex flex-wrap gap-2">
                   {["draft", "review", "published", "archived"].filter((s) => s !== c.status).map((s) => (
@@ -134,12 +134,12 @@ function CourseModal({ course, onClose, onDone }: { course: Course | null; onClo
           <Field label="Platform / venue"><input className="input" value={meetingPlatform} onChange={(e) => setMeetingPlatform(e.target.value)} /></Field>
         </div>
         <div className="flex items-center gap-4">
-          <label className="flex items-center gap-2 text-sm text-slate-600">
-            <input type="checkbox" className="h-4 w-4 accent-maroon-700" checked={certificateEnabled} onChange={(e) => setCertificateEnabled(e.target.checked)} />
+          <label className="flex items-center gap-2 text-sm text-muted-foreground">
+            <input type="checkbox" className="h-4 w-4 accent-[#635bff]" checked={certificateEnabled} onChange={(e) => setCertificateEnabled(e.target.checked)} />
             Certificate enabled
           </label>
           {certificateEnabled && (
-            <div className="flex items-center gap-2 text-sm text-slate-600">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
               min attendance <input className="input !w-20" type="number" value={minAttendancePct} onChange={(e) => setMinAttendancePct(e.target.value)} /> %
             </div>
           )}

@@ -45,7 +45,7 @@ export default function Cms() {
         <div className="card overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-slate-100">
+              <tr className="border-b border-border/60">
                 <th className="th">Page</th>
                 <th className="th">Blocks</th>
                 <th className="th">Status</th>
@@ -55,14 +55,14 @@ export default function Cms() {
             </thead>
             <tbody>
               {pages?.map((p) => (
-                <tr key={p.id} className="border-b border-slate-50 last:border-0">
+                <tr key={p.id} className="border-b border-border/40 last:border-0">
                   <td className="td">
                     <div className="font-semibold">{p.title}</div>
-                    <div className="text-xs text-slate-400">/{p.slug}</div>
+                    <div className="text-xs text-muted-foreground/70">/{p.slug}</div>
                   </td>
-                  <td className="td text-slate-500">{p.blocks.length} blocks</td>
+                  <td className="td text-muted-foreground">{p.blocks.length} blocks</td>
                   <td className="td"><Badge value={p.status} /></td>
-                  <td className="td text-xs text-slate-500">{fmtDateTime(p.updatedAt)}</td>
+                  <td className="td text-xs text-muted-foreground">{fmtDateTime(p.updatedAt)}</td>
                   <td className="td space-x-2 text-right">
                     <button
                       className="btn-secondary !px-2.5 !py-1 text-xs"

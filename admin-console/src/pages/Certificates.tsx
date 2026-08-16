@@ -58,7 +58,7 @@ export default function Certificates() {
         <div className="card overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-slate-100">
+              <tr className="border-b border-border/60">
                 <th className="th">Holder</th>
                 <th className="th">Certificate</th>
                 <th className="th">Code</th>
@@ -69,17 +69,17 @@ export default function Certificates() {
             </thead>
             <tbody>
               {data?.data.map((c) => (
-                <tr key={c.id} className="border-b border-slate-50 last:border-0">
+                <tr key={c.id} className="border-b border-border/40 last:border-0">
                   <td className="td">
                     <div className="font-semibold">{c.holderName}</div>
-                    <div className="text-xs text-slate-400">{c.holderEmail}</div>
+                    <div className="text-xs text-muted-foreground/70">{c.holderEmail}</div>
                   </td>
                   <td className="td">
                     <div className="font-medium">{c.title}</div>
-                    <div className="font-mono text-xs text-slate-400">{c.certificateNumber}</div>
+                    <div className="font-mono text-xs text-muted-foreground/70">{c.certificateNumber}</div>
                   </td>
                   <td className="td font-mono text-xs">{c.verificationCode}</td>
-                  <td className="td text-slate-500">{fmtDate(c.issuedAt)}</td>
+                  <td className="td text-muted-foreground">{fmtDate(c.issuedAt)}</td>
                   <td className="td"><Badge value={c.status} /></td>
                   <td className="td text-right">
                     {c.status === "active" && can("certificates.revoke") && (
@@ -141,12 +141,12 @@ function EligibilityModal({ onClose, onDone }: { onClose: () => void; onDone: ()
 
       {eligibility && (
         <>
-          <p className="mt-3 text-xs text-slate-500">
+          <p className="mt-3 text-xs text-muted-foreground">
             Requirement: ≥{eligibility.cohort.minAttendancePct}% attendance across completed sessions.
           </p>
           <table className="mt-3 w-full">
             <thead>
-              <tr className="border-b border-slate-100">
+              <tr className="border-b border-border/60">
                 <th className="th">Student</th>
                 <th className="th">Attendance</th>
                 <th className="th">Eligible</th>
@@ -155,7 +155,7 @@ function EligibilityModal({ onClose, onDone }: { onClose: () => void; onDone: ()
             </thead>
             <tbody>
               {eligibility.students.map((s) => (
-                <tr key={s.userId} className="border-b border-slate-50 last:border-0">
+                <tr key={s.userId} className="border-b border-border/40 last:border-0">
                   <td className="td font-medium">{s.name}</td>
                   <td className="td">
                     {s.attended}/{s.totalSessions} ({s.attendancePct}%)

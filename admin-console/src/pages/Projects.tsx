@@ -47,7 +47,7 @@ export default function Projects() {
         <div className="card overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-slate-100">
+              <tr className="border-b border-border/60">
                 <th className="th">Project</th>
                 <th className="th">Category</th>
                 <th className="th">Raised / Goal</th>
@@ -57,18 +57,18 @@ export default function Projects() {
             </thead>
             <tbody>
               {data?.data.map((p) => (
-                <tr key={p.id} className="cursor-pointer border-b border-slate-50 last:border-0 hover:bg-slate-50/60" onClick={() => setSelectedId(p.id)}>
+                <tr key={p.id} className="cursor-pointer border-b border-border/40 last:border-0 hover:bg-muted/50" onClick={() => setSelectedId(p.id)}>
                   <td className="td">
-                    <div className="font-semibold">{p.title} {p.featured && <span className="text-gold-500">★</span>}</div>
-                    <div className="text-xs text-slate-400">/{p.slug}</div>
+                    <div className="font-semibold">{p.title} {p.featured && <span className="text-amber-500">★</span>}</div>
+                    <div className="text-xs text-muted-foreground/70">/{p.slug}</div>
                   </td>
-                  <td className="td capitalize text-slate-500">{p.category ?? "—"}</td>
+                  <td className="td capitalize text-muted-foreground">{p.category ?? "—"}</td>
                   <td className="td">
                     <span className="font-semibold">{inr(p.raisedAmount)}</span>
-                    <span className="text-slate-400"> / {p.goalAmount ? inr(p.goalAmount) : "∞"}</span>
+                    <span className="text-muted-foreground/70"> / {p.goalAmount ? inr(p.goalAmount) : "∞"}</span>
                   </td>
                   <td className="td"><Badge value={p.status} /></td>
-                  <td className="td text-slate-500">{fmtDate(p.createdAt)}</td>
+                  <td className="td text-muted-foreground">{fmtDate(p.createdAt)}</td>
                 </tr>
               ))}
             </tbody>
@@ -109,7 +109,7 @@ function ProjectDetail({ id, onClose, onDone }: { id: string; onClose: () => voi
     <Modal title={project.title} open onClose={onClose} wide>
       <div className="mb-4 flex flex-wrap items-center gap-2">
         <Badge value={project.status} />
-        <span className="text-xs text-slate-400">
+        <span className="text-xs text-muted-foreground/70">
           {inr(project.raisedAmount)} raised {project.goalAmount ? `of ${inr(project.goalAmount)}` : ""}
         </span>
         <div className="ml-auto flex gap-2">
@@ -128,10 +128,10 @@ function ProjectDetail({ id, onClose, onDone }: { id: string; onClose: () => voi
       </div>
       <ErrorNote error={statusMutation.error} />
 
-      <p className="text-sm text-slate-600">{project.summary}</p>
+      <p className="text-sm text-muted-foreground">{project.summary}</p>
 
       {can("projects.manage") && (
-        <div className="mt-5 rounded-lg border border-slate-100 bg-slate-50/60 p-4">
+        <div className="mt-5 rounded-lg border border-border/60 bg-muted/50 p-4">
           <span className="label">Post an update</span>
           <input className="input" placeholder="Update title" value={updateTitle} onChange={(e) => setUpdateTitle(e.target.value)} />
           <textarea className="input mt-2" rows={2} placeholder="Details (optional)" value={updateBody} onChange={(e) => setUpdateBody(e.target.value)} />
@@ -144,12 +144,12 @@ function ProjectDetail({ id, onClose, onDone }: { id: string; onClose: () => voi
 
       <div className="mt-5 space-y-3">
         {project.updates?.map((u) => (
-          <div key={u.id} className="rounded-lg border border-slate-100 p-3">
-            <div className="flex justify-between text-xs text-slate-400">
+          <div key={u.id} className="rounded-lg border border-border/60 p-3">
+            <div className="flex justify-between text-xs text-muted-foreground/70">
               <span>{fmtDate(u.createdAt)}</span>
             </div>
-            <div className="mt-0.5 text-sm font-semibold text-slate-800">{u.title}</div>
-            {u.body && <p className="mt-1 text-xs text-slate-500">{u.body}</p>}
+            <div className="mt-0.5 text-sm font-semibold text-foreground/90">{u.title}</div>
+            {u.body && <p className="mt-1 text-xs text-muted-foreground">{u.body}</p>}
           </div>
         ))}
       </div>
@@ -201,8 +201,8 @@ function ProjectModal({ project, onClose, onDone }: { project: Project | null; o
           <Field label="Location"><input className="input" value={location} onChange={(e) => setLocation(e.target.value)} /></Field>
           <Field label="Goal (₹)"><input className="input" type="number" value={goalAmount} onChange={(e) => setGoalAmount(e.target.value)} /></Field>
         </div>
-        <label className="flex items-center gap-2 text-sm text-slate-600">
-          <input type="checkbox" className="h-4 w-4 accent-maroon-700" checked={featured} onChange={(e) => setFeatured(e.target.checked)} />
+        <label className="flex items-center gap-2 text-sm text-muted-foreground">
+          <input type="checkbox" className="h-4 w-4 accent-[#635bff]" checked={featured} onChange={(e) => setFeatured(e.target.checked)} />
           Featured on homepage
         </label>
         <ErrorNote error={mutation.error} />

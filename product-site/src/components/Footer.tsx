@@ -1,19 +1,18 @@
 import Link from "next/link";
+import { AspireLogo } from "@/components/AspireMark";
 
 export default function Footer() {
   return (
     <footer className="mt-20 bg-maroon-900 text-cream-100">
       <div className="mx-auto grid max-w-6xl gap-10 px-4 py-14 md:grid-cols-4">
         <div className="md:col-span-2">
-          <div className="flex items-center gap-2">
-            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-cream-50 font-serif text-lg font-bold text-maroon-800">
-              A
-            </span>
-            <span className="font-serif text-xl font-semibold tracking-wide">TEAM ASPIRE</span>
-          </div>
+          <AspireLogo dark />
           <p className="mt-4 max-w-md text-sm leading-relaxed text-cream-100/80">
             A women-only space rooted in deen, sisterhood &amp; humanitarian service. Building
             community for 10+ years.
+          </p>
+          <p className="mt-4 font-serif text-sm italic text-gold-300/90">
+            “And whoever saves a life — it is as if they had saved all of humanity.”
           </p>
         </div>
         <div>

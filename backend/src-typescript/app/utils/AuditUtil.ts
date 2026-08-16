@@ -27,3 +27,20 @@ export const audit = (allData: any, input: AuditInput): void => {
         metadata: input.metadata ?? {},
     } as any).catch((err) => log.error({ err }, 'audit write failed'));
 };
+
+/** Audit write with an explicit actor (for flows without request context, e.g. login). */
+export const auditDirect = (
+    actor: { id?: string | null; email?: string | null },
+    input: AuditInput
+): void => {
+    AuditLog.create({
+        actorId: actor.id ?? null,
+        actorEmail: actor.email ?? null,
+        action: input.action,
+        resourceType: input.resourceType,
+        resourceId: input.resourceId ?? null,
+        ip: null,
+        userAgent: null,
+        metadata: input.metadata ?? {},
+    } as any).catch((err) => log.error({ err }, 'audit write failed'));
+};

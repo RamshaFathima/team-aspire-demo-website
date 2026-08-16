@@ -42,16 +42,16 @@ export default function Settings() {
         <div className="space-y-6">
           {[...groups.entries()].map(([group, items]) => (
             <div key={group} className="card overflow-hidden">
-              <div className="border-b border-slate-100 bg-slate-50/60 px-4 py-2 text-xs font-bold uppercase tracking-widest text-slate-400">
+              <div className="border-b border-border/60 bg-muted/50 px-4 py-2 text-xs font-bold uppercase tracking-widest text-muted-foreground/70">
                 {group}
               </div>
               <table className="w-full">
                 <tbody>
                   {items.map((s) => (
-                    <tr key={s.key} className="border-b border-slate-50 last:border-0">
+                    <tr key={s.key} className="border-b border-border/40 last:border-0">
                       <td className="td w-72 font-mono text-xs">{s.key}</td>
                       <td className="td font-medium">{JSON.stringify(s.value)}</td>
-                      <td className="td text-xs text-slate-400">{s.description}</td>
+                      <td className="td text-xs text-muted-foreground/70">{s.description}</td>
                       <td className="td text-right">
                         <button className="btn-secondary !px-2.5 !py-1 text-xs" onClick={() => setEditing(s)}>Edit</button>
                       </td>

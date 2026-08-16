@@ -17,6 +17,14 @@ const server = async () => {
     app.use(express.json());
     app.use(express.urlencoded({ extended: true }));
 
+    // Drop empty query params so optional Joi string rules don't reject ?search=
+    app.use((req: Request, _res: Response, next: NextFunction) => {
+        for (const key of Object.keys(req.query)) {
+            if (req.query[key] === '') delete req.query[key];
+        }
+        next();
+    });
+
     // Health check (kept above the request logger so it doesn't spam logs)
     app.get('/health', (_req: Request, res: Response) => {
         res.status(200).type('text/plain').send('OK');

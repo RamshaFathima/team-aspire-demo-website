@@ -9,6 +9,7 @@ import Enrollment from '../../../models/enrollment.model';
 import Certificate from '../../../models/certificate.model';
 import Attendance from '../../../models/attendance.model';
 import User from '../../../models/user.model';
+import AuditLog from '../../../models/audit.log.model';
 import { sequelize } from '../../../../config/sequelizeConfig';
 
 class DashboardService {
@@ -97,6 +98,83 @@ class DashboardService {
                 courseTitle: s.cohort?.course?.title,
                 cohort: undefined,
             })),
+        };
+    }
+
+    /** Rich series for the analytics dashboard (charts). */
+    async analytics() {
+        const thirtyDaysAgo = new Date();
+        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 29);
+        thirtyDaysAgo.setHours(0, 0, 0, 0);
+
+        const twelveWeeksAgo = new Date();
+        twelveWeeksAgo.setDate(twelveWeeksAgo.getDate() - 7 * 11);
+        twelveWeeksAgo.setHours(0, 0, 0, 0);
+
+        const [donationsByDay, donationsByProject, donationsByStatus, enrollmentsByCourse, attendanceBySession, memberGrowth, recentActivity] =
+            await Promise.all([
+                sequelize.query(
+                    `SELECT to_char(d, 'DD Mon')                       AS day,
+                            d                                          AS date,
+                            coalesce(sum(dn.amount), 0)::float         AS total,
+                            count(dn.id)::int                          AS count
+                     FROM generate_series(:since::date, now()::date, interval '1 day') AS d
+                     LEFT JOIN donations dn
+                        ON date_trunc('day', dn.created_at) = d AND dn.status = 'success'
+                     GROUP BY d ORDER BY d`,
+                    { replacements: { since: thirtyDaysAgo }, type: QueryTypes.SELECT }
+                ),
+                sequelize.query(
+                    `SELECT coalesce(p.title, 'General fund') AS name,
+                            sum(d.amount)::float              AS value
+                     FROM donations d
+                     LEFT JOIN projects p ON p.id = d.project_id
+                     WHERE d.status = 'success'
+                     GROUP BY p.title ORDER BY value DESC LIMIT 8`,
+                    { type: QueryTypes.SELECT }
+                ),
+                sequelize.query(
+                    `SELECT status AS name, count(*)::int AS value
+                     FROM donations GROUP BY status ORDER BY value DESC`,
+                    { type: QueryTypes.SELECT }
+                ),
+                sequelize.query(
+                    `SELECT c.title AS name, count(e.id)::int AS value
+                     FROM enrollments e JOIN courses c ON c.id = e.course_id
+                     GROUP BY c.title ORDER BY value DESC LIMIT 8`,
+                    { type: QueryTypes.SELECT }
+                ),
+                sequelize.query(
+                    `SELECT cs.title                                            AS name,
+                            cs.starts_at                                        AS date,
+                            count(*) FILTER (WHERE a.status IN ('present','late'))::int AS present,
+                            count(*) FILTER (WHERE a.status = 'absent')::int    AS absent
+                     FROM class_sessions cs
+                     JOIN attendance a ON a.session_id = cs.id
+                     WHERE cs.status = 'completed'
+                     GROUP BY cs.id, cs.title, cs.starts_at
+                     ORDER BY cs.starts_at DESC LIMIT 10`,
+                    { type: QueryTypes.SELECT }
+                ),
+                sequelize.query(
+                    `SELECT to_char(date_trunc('week', d), 'DD Mon') AS week,
+                            count(u.id)::int                          AS value
+                     FROM generate_series(:since::date, now()::date, interval '1 week') AS d
+                     LEFT JOIN users u ON date_trunc('week', u.created_at) = date_trunc('week', d)
+                     GROUP BY date_trunc('week', d) ORDER BY date_trunc('week', d)`,
+                    { replacements: { since: twelveWeeksAgo }, type: QueryTypes.SELECT }
+                ),
+                AuditLog.findAll({ order: [['createdAt', 'DESC']], limit: 12 }),
+            ]);
+
+        return {
+            donationsByDay,
+            donationsByProject,
+            donationsByStatus,
+            enrollmentsByCourse,
+            attendanceBySession: (attendanceBySession as any[]).reverse(),
+            memberGrowth,
+            recentActivity,
         };
     }
 }

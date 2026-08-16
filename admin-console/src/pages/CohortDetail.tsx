@@ -57,9 +57,9 @@ export default function CohortDetail() {
 
       <div className="mb-4 flex items-center gap-2">
         <Badge value={cohort.status} />
-        <span className="text-xs text-slate-400">{cohort.enrollments.length} students · {cohort.sessions.length} sessions</span>
+        <span className="text-xs text-muted-foreground/70">{cohort.enrollments.length} students · {cohort.sessions.length} sessions</span>
         {cohort.teachers.length > 0 && (
-          <span className="text-xs text-slate-500">
+          <span className="text-xs text-muted-foreground">
             Teachers: {cohort.teachers.map((t) => t.teacherName).join(", ")}
           </span>
         )}
@@ -67,10 +67,10 @@ export default function CohortDetail() {
 
       <div className="grid gap-6 xl:grid-cols-2">
         <div className="card overflow-hidden">
-          <div className="border-b border-slate-100 px-4 py-3 text-sm font-bold text-slate-700">Roster</div>
+          <div className="border-b border-border/60 px-4 py-3 text-sm font-bold text-foreground/80">Roster</div>
           <table className="w-full">
             <thead>
-              <tr className="border-b border-slate-100">
+              <tr className="border-b border-border/60">
                 <th className="th">Student</th>
                 <th className="th">Status</th>
                 <th className="th">Enrolled</th>
@@ -78,27 +78,27 @@ export default function CohortDetail() {
             </thead>
             <tbody>
               {cohort.enrollments.map((e) => (
-                <tr key={e.id} className="border-b border-slate-50 last:border-0">
+                <tr key={e.id} className="border-b border-border/40 last:border-0">
                   <td className="td">
                     <div className="font-medium">{e.studentName}</div>
-                    <div className="text-xs text-slate-400">{e.studentEmail}</div>
+                    <div className="text-xs text-muted-foreground/70">{e.studentEmail}</div>
                   </td>
                   <td className="td"><Badge value={e.status} /></td>
-                  <td className="td text-xs text-slate-500">{fmtDate(e.enrolledAt)}</td>
+                  <td className="td text-xs text-muted-foreground">{fmtDate(e.enrolledAt)}</td>
                 </tr>
               ))}
               {cohort.enrollments.length === 0 && (
-                <tr><td colSpan={3} className="td py-8 text-center text-slate-400">No students yet</td></tr>
+                <tr><td colSpan={3} className="td py-8 text-center text-muted-foreground/70">No students yet</td></tr>
               )}
             </tbody>
           </table>
         </div>
 
         <div className="card overflow-hidden">
-          <div className="border-b border-slate-100 px-4 py-3 text-sm font-bold text-slate-700">Class sessions</div>
+          <div className="border-b border-border/60 px-4 py-3 text-sm font-bold text-foreground/80">Class sessions</div>
           <table className="w-full">
             <thead>
-              <tr className="border-b border-slate-100">
+              <tr className="border-b border-border/60">
                 <th className="th">Session</th>
                 <th className="th">When</th>
                 <th className="th">Status</th>
@@ -107,12 +107,12 @@ export default function CohortDetail() {
             </thead>
             <tbody>
               {cohort.sessions.map((s) => (
-                <tr key={s.id} className="border-b border-slate-50 last:border-0">
+                <tr key={s.id} className="border-b border-border/40 last:border-0">
                   <td className="td">
                     <div className="font-medium">{s.title}</div>
-                    <div className="text-xs text-slate-400">{s.topic}</div>
+                    <div className="text-xs text-muted-foreground/70">{s.topic}</div>
                   </td>
-                  <td className="td text-xs text-slate-500">{fmtDateTime(s.startsAt)}</td>
+                  <td className="td text-xs text-muted-foreground">{fmtDateTime(s.startsAt)}</td>
                   <td className="td"><Badge value={s.status} /></td>
                   <td className="td text-right">
                     <Link to={`/lms/attendance?session=${s.id}`} className="btn-secondary !px-2 !py-1 text-xs">Attendance</Link>
@@ -120,7 +120,7 @@ export default function CohortDetail() {
                 </tr>
               ))}
               {cohort.sessions.length === 0 && (
-                <tr><td colSpan={4} className="td py-8 text-center text-slate-400">No sessions scheduled</td></tr>
+                <tr><td colSpan={4} className="td py-8 text-center text-muted-foreground/70">No sessions scheduled</td></tr>
               )}
             </tbody>
           </table>
@@ -151,11 +151,11 @@ function UserPicker({ role, value, onChange }: { role?: string; value: string; o
             type="button"
             onClick={() => onChange(u.id)}
             className={`block w-full rounded-lg border px-3 py-2 text-left text-sm transition ${
-              value === u.id ? "border-maroon-700 bg-maroon-50" : "border-slate-100 hover:border-maroon-200"
+              value === u.id ? "border-primary bg-primary/10" : "border-border/60 hover:border-primary/30"
             }`}
           >
             <span className="font-medium">{u.fullName}</span>
-            <span className="ml-2 text-xs text-slate-400">{u.email}</span>
+            <span className="ml-2 text-xs text-muted-foreground/70">{u.email}</span>
           </button>
         ))}
       </div>

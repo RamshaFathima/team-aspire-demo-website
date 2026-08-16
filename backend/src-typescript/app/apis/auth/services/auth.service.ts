@@ -5,6 +5,7 @@ import EncryptionUtil from '../../../utils/EncryptionUtil';
 import { ValidationError } from '../../../handlers/CustomErrorHandler';
 import { StatusCodes } from '../../../enums/StatusCodes';
 import { ensureContact } from '../../../utils/CrmUtil';
+import { auditDirect } from '../../../utils/AuditUtil';
 import {
     IUserContext,
     invalidateUserContext,
@@ -52,6 +53,11 @@ class AuthService {
             type: 'other',
         });
 
+        auditDirect(
+            { id: user.id, email: user.email },
+            { action: 'auth.register', resourceType: 'user', resourceId: user.id }
+        );
+
         const tokens = await EncryptionUtil.generateJwtTokens({
             sub: user.id,
             email: user.email,
@@ -76,6 +82,10 @@ class AuthService {
             fullName: user.fullName,
         });
         const ctx = await loadUserContext(user.id);
+        auditDirect(
+            { id: user.id, email: user.email },
+            { action: 'auth.login', resourceType: 'user', resourceId: user.id }
+        );
         return { user: this.publicUser(user, ctx), ...tokens };
     }
 

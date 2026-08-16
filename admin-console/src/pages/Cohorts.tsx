@@ -45,7 +45,7 @@ export default function Cohorts() {
         <div className="card overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-slate-100">
+              <tr className="border-b border-border/60">
                 <th className="th">Cohort</th>
                 <th className="th">Course</th>
                 <th className="th">Schedule</th>
@@ -56,15 +56,15 @@ export default function Cohorts() {
             </thead>
             <tbody>
               {data?.data.map((c) => (
-                <tr key={c.id} className="border-b border-slate-50 last:border-0 hover:bg-slate-50/60">
+                <tr key={c.id} className="border-b border-border/40 last:border-0 hover:bg-muted/50">
                   <td className="td">
                     <div className="font-semibold">{c.name}</div>
-                    <div className="font-mono text-xs text-slate-400">{c.code}</div>
+                    <div className="font-mono text-xs text-muted-foreground/70">{c.code}</div>
                   </td>
-                  <td className="td text-slate-500">{c.courseTitle}</td>
-                  <td className="td text-xs text-slate-500">
+                  <td className="td text-muted-foreground">{c.courseTitle}</td>
+                  <td className="td text-xs text-muted-foreground">
                     {c.scheduleNote ?? "—"}
-                    {c.startsOn && <div className="text-slate-400">from {fmtDate(c.startsOn)}</div>}
+                    {c.startsOn && <div className="text-muted-foreground/70">from {fmtDate(c.startsOn)}</div>}
                   </td>
                   <td className="td">{c.enrolled}{c.capacity ? ` / ${c.capacity}` : ""}</td>
                   <td className="td"><Badge value={c.status} /></td>

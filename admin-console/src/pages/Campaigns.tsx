@@ -50,18 +50,18 @@ export default function Campaigns() {
             return (
               <div key={c.id} className="card p-5">
                 <div className="flex items-start justify-between gap-3">
-                  <h3 className="font-bold text-slate-800">{c.title}</h3>
+                  <h3 className="font-bold text-foreground/90">{c.title}</h3>
                   <Badge value={c.status} />
                 </div>
-                {c.project && <div className="mt-1 text-xs text-slate-400">↳ {c.project.title}</div>}
-                <p className="mt-2 line-clamp-2 text-xs text-slate-500">{c.description}</p>
+                {c.project && <div className="mt-1 text-xs text-muted-foreground/70">↳ {c.project.title}</div>}
+                <p className="mt-2 line-clamp-2 text-xs text-muted-foreground">{c.description}</p>
                 <div className="mt-4">
-                  <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-100">
-                    <div className="h-full rounded-full bg-maroon-600" style={{ width: `${Math.max(2, progress)}%` }} />
+                  <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
+                    <div className="h-full rounded-full bg-primary" style={{ width: `${Math.max(2, progress)}%` }} />
                   </div>
                   <div className="mt-2 flex justify-between text-xs">
-                    <span className="font-bold text-slate-700">{inr(c.raisedAmount)}</span>
-                    <span className="text-slate-400">{c.goalAmount ? `of ${inr(c.goalAmount)} (${progress}%)` : "no goal"}</span>
+                    <span className="font-bold text-foreground/80">{inr(c.raisedAmount)}</span>
+                    <span className="text-muted-foreground/70">{c.goalAmount ? `of ${inr(c.goalAmount)} (${progress}%)` : "no goal"}</span>
                   </div>
                 </div>
                 {can("campaigns.manage") && (

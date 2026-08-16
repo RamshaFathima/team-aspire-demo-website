@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { api, can, fmtDate } from "@/lib/api";
-import { Badge, ErrorNote, Field, Modal, PageHeader, Spinner } from "@/components/ui";
+import { Avatar, Badge, ErrorNote, Field, Modal, PageHeader, TableSkeleton } from "@/components/ui";
 
 type User = {
   id: string;
@@ -54,12 +54,12 @@ export default function People() {
       />
 
       {isLoading ? (
-        <Spinner />
+        <TableSkeleton />
       ) : (
         <div className="card overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-slate-100">
+              <tr className="border-b border-border/60">
                 <th className="th">Name</th>
                 <th className="th">Email</th>
                 <th className="th">Roles</th>
@@ -70,16 +70,21 @@ export default function People() {
             </thead>
             <tbody>
               {data?.data.map((u) => (
-                <tr key={u.id} className="border-b border-slate-50 last:border-0 hover:bg-slate-50/60">
-                  <td className="td font-semibold">{u.fullName}</td>
-                  <td className="td text-slate-500">{u.email}</td>
+                <tr key={u.id} className="border-b border-border/40 last:border-0 hover:bg-muted/50">
+                  <td className="td">
+                    <div className="flex items-center gap-2.5">
+                      <Avatar name={u.fullName} />
+                      <span className="font-medium">{u.fullName}</span>
+                    </div>
+                  </td>
+                  <td className="td text-muted-foreground">{u.email}</td>
                   <td className="td">
                     <div className="flex flex-wrap gap-1">
-                      {u.roles.length ? u.roles.map((r) => <Badge key={r} value={r.toLowerCase()} />) : <span className="text-slate-300">—</span>}
+                      {u.roles.length ? u.roles.map((r) => <Badge key={r} value={r.toLowerCase()} />) : <span className="text-muted-foreground/40">—</span>}
                     </div>
                   </td>
                   <td className="td"><Badge value={u.status} /></td>
-                  <td className="td text-slate-500">{fmtDate(u.createdAt)}</td>
+                  <td className="td text-muted-foreground">{fmtDate(u.createdAt)}</td>
                   <td className="td text-right">
                     {(can("users.update") || can("roles.manage")) && (
                       <button className="btn-secondary !px-2.5 !py-1 text-xs" onClick={() => setEditUser(u)}>
@@ -91,7 +96,7 @@ export default function People() {
               ))}
             </tbody>
           </table>
-          <div className="flex items-center justify-between border-t border-slate-100 px-4 py-3 text-xs text-slate-500">
+          <div className="flex items-center justify-between border-t border-border/60 px-4 py-3 text-xs text-muted-foreground">
             <span>{data?.total} people</span>
             <div className="flex gap-2">
               <button className="btn-secondary !px-2.5 !py-1 text-xs" disabled={page <= 1} onClick={() => setPage((p) => p - 1)}>Prev</button>
@@ -135,7 +140,7 @@ function CreateUserModal({ open, onClose, roles, onDone }: { open: boolean; onCl
                   type="button"
                   onClick={() => setRoleKeys((prev) => prev.includes(r.key) ? prev.filter((k) => k !== r.key) : [...prev, r.key])}
                   className={`rounded-full border px-3 py-1 text-xs font-semibold transition ${
-                    roleKeys.includes(r.key) ? "border-maroon-700 bg-maroon-700 text-white" : "border-slate-200 text-slate-600 hover:border-maroon-300"
+                    roleKeys.includes(r.key) ? "border-primary bg-primary text-primary-foreground" : "border-border text-muted-foreground hover:border-primary/40"
                   }`}
                 >
                   {r.name}
@@ -195,7 +200,7 @@ function EditUserModal({ user, roles, onClose, onDone }: { user: User; roles: Ro
                     type="button"
                     onClick={() => setRoleKeys((prev) => prev.includes(r.key) ? prev.filter((k) => k !== r.key) : [...prev, r.key])}
                     className={`rounded-full border px-3 py-1 text-xs font-semibold transition ${
-                      roleKeys.includes(r.key) ? "border-maroon-700 bg-maroon-700 text-white" : "border-slate-200 text-slate-600 hover:border-maroon-300"
+                      roleKeys.includes(r.key) ? "border-primary bg-primary text-primary-foreground" : "border-border text-muted-foreground hover:border-primary/40"
                     }`}
                   >
                     {r.name}

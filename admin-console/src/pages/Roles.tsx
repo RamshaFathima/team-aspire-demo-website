@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Fragment } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/lib/api";
 import { ErrorNote, PageHeader, Spinner } from "@/components/ui";
@@ -60,14 +61,14 @@ export default function Roles() {
       <div className="card overflow-x-auto">
         <table className="w-full min-w-[900px]">
           <thead>
-            <tr className="border-b border-slate-100">
+            <tr className="border-b border-border/60">
               <th className="th sticky left-0 bg-white">Permission</th>
               {roles?.map((r) => (
                 <th key={r.id} className="th text-center">
                   <div>{r.name}</div>
                   {draft[r.id] && (
                     <button
-                      className="mt-1 rounded-full bg-maroon-700 px-2 py-0.5 text-[10px] font-bold text-white"
+                      className="mt-1 rounded-full bg-primary px-2 py-0.5 text-[10px] font-bold text-white"
                       disabled={saveMutation.isPending}
                       onClick={() => saveMutation.mutate({ roleId: r.id, permissionKeys: draft[r.id] })}
                     >
@@ -80,16 +81,16 @@ export default function Roles() {
           </thead>
           <tbody>
             {domains.map((domain) => (
-              <>
-                <tr key={domain} className="bg-slate-50/70">
-                  <td colSpan={1 + (roles?.length ?? 0)} className="px-4 py-1.5 text-[10px] font-bold uppercase tracking-widest text-slate-400">
+              <Fragment key={domain}>
+                <tr className="bg-muted/60">
+                  <td colSpan={1 + (roles?.length ?? 0)} className="px-4 py-1.5 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70">
                     {domain}
                   </td>
                 </tr>
                 {permissions
                   ?.filter((p) => p.key.startsWith(`${domain}.`) || p.key === domain)
                   .map((perm) => (
-                    <tr key={perm.id} className="border-b border-slate-50 last:border-0">
+                    <tr key={perm.id} className="border-b border-border/40 last:border-0">
                       <td className="td sticky left-0 bg-white font-mono text-xs">{perm.key}</td>
                       {roles?.map((role) => {
                         const has = grants(role).includes(perm.key);
@@ -101,8 +102,8 @@ export default function Roles() {
                               onClick={() => toggle(role, perm.key)}
                               className={`h-5 w-5 rounded border text-[11px] font-bold leading-none transition ${
                                 has
-                                  ? "border-maroon-700 bg-maroon-700 text-white"
-                                  : "border-slate-200 bg-white text-transparent hover:border-maroon-300"
+                                  ? "border-primary bg-primary text-primary-foreground"
+                                  : "border-border bg-white text-transparent hover:border-primary/40"
                               } ${locked ? "opacity-60" : ""}`}
                             >
                               ✓
@@ -112,7 +113,7 @@ export default function Roles() {
                       })}
                     </tr>
                   ))}
-              </>
+              </Fragment>
             ))}
           </tbody>
         </table>

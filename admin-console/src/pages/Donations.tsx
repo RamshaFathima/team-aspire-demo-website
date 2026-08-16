@@ -64,9 +64,9 @@ export default function Donations() {
         <div className="card overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-slate-100">
+              <tr className="border-b border-border/60">
                 <th className="th">Donor</th>
-                <th className="th">Amount</th>
+                <th className="th !text-right">Amount</th>
                 <th className="th">Towards</th>
                 <th className="th">Method</th>
                 <th className="th">Status</th>
@@ -76,22 +76,22 @@ export default function Donations() {
             </thead>
             <tbody>
               {data?.data.map((d) => (
-                <tr key={d.id} className="cursor-pointer border-b border-slate-50 last:border-0 hover:bg-slate-50/60" onClick={() => setSelected(d)}>
+                <tr key={d.id} className="cursor-pointer border-b border-border/40 last:border-0 hover:bg-muted/50" onClick={() => setSelected(d)}>
                   <td className="td">
                     <div className="font-semibold">{d.isAnonymous ? "Anonymous" : d.donorName}</div>
-                    <div className="text-xs text-slate-400">{d.donorEmail}</div>
+                    <div className="text-xs text-muted-foreground/70">{d.donorEmail}</div>
                   </td>
-                  <td className="td font-bold">{inr(d.amount)}</td>
-                  <td className="td text-slate-500">{d.campaign?.title ?? d.project?.title ?? "General"}</td>
-                  <td className="td text-xs uppercase text-slate-500">{d.method.replace("mock_", "")}</td>
+                  <td className="td num font-semibold">{inr(d.amount)}</td>
+                  <td className="td text-muted-foreground">{d.campaign?.title ?? d.project?.title ?? "General"}</td>
+                  <td className="td text-xs uppercase text-muted-foreground">{d.method.replace("mock_", "")}</td>
                   <td className="td"><Badge value={d.status} /></td>
-                  <td className="td font-mono text-xs text-slate-500">{d.receiptNumber ?? "—"}</td>
-                  <td className="td text-xs text-slate-500">{fmtDateTime(d.createdAt)}</td>
+                  <td className="td font-mono text-xs text-muted-foreground">{d.receiptNumber ?? "—"}</td>
+                  <td className="td text-xs text-muted-foreground">{fmtDateTime(d.createdAt)}</td>
                 </tr>
               ))}
             </tbody>
           </table>
-          <div className="flex items-center justify-between border-t border-slate-100 px-4 py-3 text-xs text-slate-500">
+          <div className="flex items-center justify-between border-t border-border/60 px-4 py-3 text-xs text-muted-foreground">
             <span>{data?.total} records</span>
             <div className="flex gap-2">
               <button className="btn-secondary !px-2.5 !py-1 text-xs" disabled={page <= 1} onClick={() => setPage((p) => p - 1)}>Prev</button>
@@ -129,8 +129,8 @@ function DonationModal({ donation, onClose, onDone }: { donation: Donation; onCl
         <Row label="Receipt" value={donation.receiptNumber ?? "—"} mono />
         {donation.message && <Row label="Message" value={donation.message} />}
         {donation.refundReason && <Row label="Refund reason" value={donation.refundReason} />}
-        <div className="flex items-center justify-between border-b border-slate-50 pb-2">
-          <dt className="text-slate-400">Status</dt>
+        <div className="flex items-center justify-between border-b border-border/40 pb-2">
+          <dt className="text-muted-foreground/70">Status</dt>
           <dd><Badge value={donation.status} /></dd>
         </div>
       </dl>
@@ -145,8 +145,8 @@ function DonationModal({ donation, onClose, onDone }: { donation: Donation; onCl
           </>
         )}
         {donation.status === "success" && can("donations.refund") && (
-          <div className="rounded-lg border border-rose-100 bg-rose-50/40 p-3">
-            <span className="label !text-rose-500">Refund</span>
+          <div className="rounded-lg border border-destructive/20 bg-destructive/5 p-3">
+            <span className="label !text-destructive">Refund</span>
             <input className="input" placeholder="Reason for refund…" value={refundReason} onChange={(e) => setRefundReason(e.target.value)} />
             <button className="btn-danger mt-2 w-full" disabled={refundMutation.isPending || refundReason.length < 3} onClick={() => refundMutation.mutate()}>
               {refundMutation.isPending ? "Refunding…" : "Refund donation"}
@@ -161,9 +161,9 @@ function DonationModal({ donation, onClose, onDone }: { donation: Donation; onCl
 
 function Row({ label, value, mono }: { label: string; value: string; mono?: boolean }) {
   return (
-    <div className="flex items-start justify-between gap-6 border-b border-slate-50 pb-2">
-      <dt className="shrink-0 text-slate-400">{label}</dt>
-      <dd className={`text-right font-medium text-slate-700 ${mono ? "font-mono text-xs" : ""}`}>{value}</dd>
+    <div className="flex items-start justify-between gap-6 border-b border-border/40 pb-2">
+      <dt className="shrink-0 text-muted-foreground/70">{label}</dt>
+      <dd className={`text-right font-medium text-foreground/80 ${mono ? "font-mono text-xs" : ""}`}>{value}</dd>
     </div>
   );
 }
