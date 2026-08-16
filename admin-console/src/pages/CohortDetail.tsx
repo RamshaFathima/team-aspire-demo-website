@@ -170,12 +170,24 @@ function EnrollModal({ cohortId, onClose, onDone }: { cohortId: string; onClose:
     onSuccess: () => { onDone(); onClose(); },
   });
   return (
-    <Modal title="Enroll a student" open onClose={onClose}>
+    <Modal
+      title="Enroll a student"
+      description="Search by name or email, pick the student, then enroll."
+      open
+      onClose={onClose}
+      footer={
+        <>
+          <button className="btn-secondary" onClick={onClose}>
+            Cancel
+          </button>
+          <button className="btn-primary" disabled={!userId || mutation.isPending} onClick={() => mutation.mutate()}>
+            {mutation.isPending ? "Enrolling…" : "Enroll student"}
+          </button>
+        </>
+      }
+    >
       <UserPicker value={userId} onChange={setUserId} />
       <ErrorNote error={mutation.error} />
-      <button className="btn-primary mt-4 w-full" disabled={!userId || mutation.isPending} onClick={() => mutation.mutate()}>
-        {mutation.isPending ? "Enrolling…" : "Enroll student"}
-      </button>
     </Modal>
   );
 }
@@ -187,12 +199,24 @@ function TeacherModal({ cohortId, onClose, onDone }: { cohortId: string; onClose
     onSuccess: () => { onDone(); onClose(); },
   });
   return (
-    <Modal title="Assign a teacher" open onClose={onClose}>
+    <Modal
+      title="Assign a teacher"
+      description="Only people with the Teacher role are shown."
+      open
+      onClose={onClose}
+      footer={
+        <>
+          <button className="btn-secondary" onClick={onClose}>
+            Cancel
+          </button>
+          <button className="btn-primary" disabled={!teacherId || mutation.isPending} onClick={() => mutation.mutate()}>
+            {mutation.isPending ? "Assigning…" : "Assign teacher"}
+          </button>
+        </>
+      }
+    >
       <UserPicker role="TEACHER" value={teacherId} onChange={setTeacherId} />
       <ErrorNote error={mutation.error} />
-      <button className="btn-primary mt-4 w-full" disabled={!teacherId || mutation.isPending} onClick={() => mutation.mutate()}>
-        {mutation.isPending ? "Assigning…" : "Assign teacher"}
-      </button>
     </Modal>
   );
 }
@@ -213,16 +237,36 @@ function SessionModal({ cohortId, onClose, onDone }: { cohortId: string; onClose
   });
 
   return (
-    <Modal title="Schedule a class" open onClose={onClose}>
+    <Modal
+      title="Schedule a class"
+      description="Students see scheduled classes in their account."
+      open
+      onClose={onClose}
+      footer={
+        <>
+          <button className="btn-secondary" onClick={onClose}>
+            Cancel
+          </button>
+          <button className="btn-primary" disabled={mutation.isPending || !title || !startsAt} onClick={() => mutation.mutate()}>
+            {mutation.isPending ? "Scheduling…" : "Schedule class"}
+          </button>
+        </>
+      }
+    >
       <div className="space-y-4">
-        <Field label="Title"><input className="input" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Week 6" /></Field>
-        <Field label="Topic"><input className="input" value={topic} onChange={(e) => setTopic(e.target.value)} /></Field>
-        <Field label="Starts at"><input className="input" type="datetime-local" value={startsAt} onChange={(e) => setStartsAt(e.target.value)} /></Field>
-        <Field label="Meeting URL (optional)"><input className="input" value={meetingUrl} onChange={(e) => setMeetingUrl(e.target.value)} placeholder="https://zoom.us/…" /></Field>
+        <Field label="Title">
+          <input className="input" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Week 6" />
+        </Field>
+        <Field label="Topic">
+          <input className="input" value={topic} onChange={(e) => setTopic(e.target.value)} placeholder="What will be covered?" />
+        </Field>
+        <Field label="Starts at">
+          <input className="input" type="datetime-local" value={startsAt} onChange={(e) => setStartsAt(e.target.value)} />
+        </Field>
+        <Field label="Meeting link (optional)">
+          <input className="input" value={meetingUrl} onChange={(e) => setMeetingUrl(e.target.value)} placeholder="https://zoom.us/…" />
+        </Field>
         <ErrorNote error={mutation.error} />
-        <button className="btn-primary w-full" disabled={mutation.isPending || !title || !startsAt} onClick={() => mutation.mutate()}>
-          {mutation.isPending ? "Scheduling…" : "Schedule class"}
-        </button>
       </div>
     </Modal>
   );

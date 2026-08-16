@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { api, can, fmtDate, fmtDateTime, inr } from "@/lib/api";
 import { Avatar, Badge, ErrorNote, Modal, PageHeader, TableSkeleton } from "@/components/ui";
+import { Select } from "@/components/ui/select";
 
 type Contact = {
   id: string;
@@ -53,12 +54,12 @@ export default function Crm() {
 
       <div className="mb-4 flex flex-wrap gap-3">
         <input className="input max-w-xs" placeholder="Search name or email…" value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }} />
-        <select className="input max-w-[160px]" value={type} onChange={(e) => { setType(e.target.value); setPage(1); }}>
+        <Select className="max-w-[180px]" value={type} onChange={(e) => { setType(e.target.value); setPage(1); }}>
           <option value="">All types</option>
           {["donor", "volunteer", "student", "teacher", "partner", "other"].map((t) => (
             <option key={t} value={t}>{t}</option>
           ))}
-        </select>
+        </Select>
       </div>
 
       {isLoading ? (
@@ -130,11 +131,20 @@ function Person360Modal({ id, onClose }: { id: string; onClose: () => void }) {
   if (!person) return null;
 
   return (
-    <Modal title={person.fullName} open onClose={onClose} wide>
-      <div className="mb-4 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+    <Modal
+      title={person.fullName}
+      description={[person.email, person.phone].filter(Boolean).join(" · ") || undefined}
+      open
+      onClose={onClose}
+      wide
+      footer={
+        <button className="btn-secondary" onClick={onClose}>
+          Close
+        </button>
+      }
+    >
+      <div className="mb-4">
         <Badge value={person.type} />
-        {person.email && <span>{person.email}</span>}
-        {person.phone && <span>· {person.phone}</span>}
       </div>
 
       <div className="grid grid-cols-3 gap-3">
@@ -181,7 +191,7 @@ function Person360Modal({ id, onClose }: { id: string; onClose: () => void }) {
         <div className="mt-2 max-h-64 space-y-2 overflow-y-auto pr-1">
           {person.timeline.map((t) => (
             <div key={t.id} className="flex gap-3 rounded-lg border border-border/60 px-3 py-2">
-              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand-50 text-xs font-bold text-primary">
+              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">
                 {KIND_ICONS[t.kind] ?? "·"}
               </span>
               <div className="min-w-0">

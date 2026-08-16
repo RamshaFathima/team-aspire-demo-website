@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Flower2, HeartHandshake, MoonStar } from "lucide-react";
 import { apiOrNull, type Project, type PublicStats, type UpcomingSession } from "@/lib/api";
 import { inr } from "@/lib/format";
 import ProjectCard from "@/components/ProjectCard";
@@ -10,17 +11,17 @@ const PILLARS = [
   {
     title: "Deen",
     body: "Weekly circles, seerah classes and Quranic Arabic — knowledge that anchors the heart.",
-    emoji: "☾",
+    icon: MoonStar,
   },
   {
     title: "Sisterhood",
     body: "A women-only space where every sister belongs, learns, and grows — for over a decade.",
-    emoji: "✿",
+    icon: Flower2,
   },
   {
     title: "Service",
     body: "From warm breakfasts to R.O. water plants and medical aid — mercy, made practical.",
-    emoji: "❥",
+    icon: HeartHandshake,
   },
 ];
 
@@ -138,8 +139,8 @@ export default async function HomePage() {
               key={pillar.title}
               className="card group p-8 text-center transition hover:-translate-y-1 hover:shadow-lg"
             >
-              <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-maroon-700/10 font-serif text-2xl text-maroon-700 transition group-hover:bg-maroon-700 group-hover:text-cream-50">
-                {pillar.emoji}
+              <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-maroon-700/10 text-maroon-700 transition group-hover:bg-maroon-700 group-hover:text-cream-50">
+                <pillar.icon className="h-5 w-5" strokeWidth={1.8} />
               </span>
               <h3 className="mt-5 font-serif text-2xl text-maroon-900">{pillar.title}</h3>
               <p className="mt-3 text-sm leading-relaxed text-maroon-950/65">{pillar.body}</p>

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { api, can, fmtDate } from "@/lib/api";
 import { Badge, ErrorNote, Field, Modal, PageHeader, Spinner } from "@/components/ui";
+import { Select } from "@/components/ui/select";
 
 type Certificate = {
   id: string;
@@ -133,11 +134,26 @@ function EligibilityModal({ onClose, onDone }: { onClose: () => void; onDone: ()
   });
 
   return (
-    <Modal title="Issue certificates" open onClose={onClose} wide>
-      <select className="input" value={cohortId} onChange={(e) => setCohortId(e.target.value)}>
+    <Modal
+      title="Issue certificates"
+      description="Pick a cohort — eligibility is computed from marked attendance."
+      open
+      onClose={onClose}
+      wide
+      footer={
+        <button className="btn-secondary" onClick={onClose}>
+          Done
+        </button>
+      }
+    >
+      <Select value={cohortId} onChange={(e) => setCohortId(e.target.value)}>
         <option value="">Select cohort…</option>
-        {cohorts?.map((c) => <option key={c.id} value={c.id}>{c.courseTitle} · {c.name}</option>)}
-      </select>
+        {cohorts?.map((c) => (
+          <option key={c.id} value={c.id}>
+            {c.courseTitle} · {c.name}
+          </option>
+        ))}
+      </Select>
 
       {eligibility && (
         <>
@@ -192,14 +208,33 @@ function RevokeModal({ certificate, onClose, onDone }: { certificate: Certificat
     onSuccess: () => { onDone(); onClose(); },
   });
   return (
-    <Modal title={`Revoke ${certificate.certificateNumber}`} open onClose={onClose}>
+    <Modal
+      title="Revoke certificate"
+      description={`${certificate.certificateNumber} · ${certificate.holderName}`}
+      open
+      onClose={onClose}
+      footer={
+        <>
+          <button className="btn-secondary" onClick={onClose}>
+            Cancel
+          </button>
+          <button
+            className="btn-danger"
+            disabled={reason.length < 3 || mutation.isPending}
+            onClick={() => mutation.mutate()}
+          >
+            {mutation.isPending ? "Revoking…" : "Revoke certificate"}
+          </button>
+        </>
+      }
+    >
       <Field label="Reason">
         <input className="input" value={reason} onChange={(e) => setReason(e.target.value)} placeholder="Why is this being revoked?" />
       </Field>
+      <p className="mt-2 text-2xs text-muted-foreground">
+        The public verification page will show this certificate as revoked.
+      </p>
       <ErrorNote error={mutation.error} />
-      <button className="btn-danger mt-4 w-full" disabled={reason.length < 3 || mutation.isPending} onClick={() => mutation.mutate()}>
-        {mutation.isPending ? "Revoking…" : "Revoke certificate"}
-      </button>
     </Modal>
   );
 }

@@ -3,6 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { api, can, fmtDateTime } from "@/lib/api";
 import { Badge, ErrorNote, PageHeader, Spinner } from "@/components/ui";
+import { Select } from "@/components/ui/select";
 
 type Session = {
   id: string;
@@ -74,8 +75,8 @@ export default function Attendance() {
     <>
       <PageHeader title="Attendance" subtitle="Pick a session, mark the roster, save." />
 
-      <select
-        className="input mb-6 max-w-xl"
+      <Select
+        className="mb-6 max-w-xl"
         value={sessionId}
         onChange={(e) => setParams(e.target.value ? { session: e.target.value } : {})}
       >
@@ -85,7 +86,7 @@ export default function Attendance() {
             {s.courseTitle} · {s.cohortName} · {s.title} ({fmtDateTime(s.startsAt)}) [{s.status}]
           </option>
         ))}
-      </select>
+      </Select>
 
       {sessionId && isLoading && <Spinner />}
 

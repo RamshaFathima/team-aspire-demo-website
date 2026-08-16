@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { api, can, fmtDate } from "@/lib/api";
 import { Avatar, Badge, ErrorNote, Field, Modal, PageHeader, TableSkeleton } from "@/components/ui";
+import { Select } from "@/components/ui/select";
 
 type User = {
   id: string;
@@ -126,11 +127,32 @@ function CreateUserModal({ open, onClose, roles, onDone }: { open: boolean; onCl
   });
 
   return (
-    <Modal title="New person" open={open} onClose={onClose}>
+    <Modal
+      title="New person"
+      description="Creates an account they can sign in with — share the temporary password privately."
+      open={open}
+      onClose={onClose}
+      footer={
+        <>
+          <button className="btn-secondary" onClick={onClose}>
+            Cancel
+          </button>
+          <button className="btn-primary" disabled={mutation.isPending} onClick={() => mutation.mutate()}>
+            {mutation.isPending ? "Creating…" : "Create person"}
+          </button>
+        </>
+      }
+    >
       <div className="space-y-4">
-        <Field label="Full name"><input className="input" value={fullName} onChange={(e) => setFullName(e.target.value)} /></Field>
-        <Field label="Email"><input className="input" type="email" value={email} onChange={(e) => setEmail(e.target.value)} /></Field>
-        <Field label="Temporary password"><input className="input" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Min 8 characters" /></Field>
+        <Field label="Full name">
+          <input className="input" value={fullName} onChange={(e) => setFullName(e.target.value)} />
+        </Field>
+        <Field label="Email">
+          <input className="input" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+        </Field>
+        <Field label="Temporary password">
+          <input className="input" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Min 8 characters" />
+        </Field>
         {roles.length > 0 && (
           <Field label="Roles">
             <div className="flex flex-wrap gap-2">
@@ -138,9 +160,11 @@ function CreateUserModal({ open, onClose, roles, onDone }: { open: boolean; onCl
                 <button
                   key={r.key}
                   type="button"
-                  onClick={() => setRoleKeys((prev) => prev.includes(r.key) ? prev.filter((k) => k !== r.key) : [...prev, r.key])}
+                  onClick={() => setRoleKeys((prev) => (prev.includes(r.key) ? prev.filter((k) => k !== r.key) : [...prev, r.key]))}
                   className={`rounded-full border px-3 py-1 text-xs font-semibold transition ${
-                    roleKeys.includes(r.key) ? "border-primary bg-primary text-primary-foreground" : "border-border text-muted-foreground hover:border-primary/40"
+                    roleKeys.includes(r.key)
+                      ? "border-primary bg-primary text-primary-foreground"
+                      : "border-border text-muted-foreground hover:border-primary/40"
                   }`}
                 >
                   {r.name}
@@ -150,9 +174,6 @@ function CreateUserModal({ open, onClose, roles, onDone }: { open: boolean; onCl
           </Field>
         )}
         <ErrorNote error={mutation.error} />
-        <button className="btn-primary w-full" disabled={mutation.isPending} onClick={() => mutation.mutate()}>
-          {mutation.isPending ? "Creating…" : "Create person"}
-        </button>
       </div>
     </Modal>
   );
@@ -162,58 +183,68 @@ function EditUserModal({ user, roles, onClose, onDone }: { user: User; roles: Ro
   const [status, setStatus] = useState(user.status);
   const [roleKeys, setRoleKeys] = useState<string[]>(user.roles);
 
-  const statusMutation = useMutation({
-    mutationFn: () => api(`/users/${user.id}`, { method: "PATCH", body: { status } }),
-    onSuccess: onDone,
-  });
-  const rolesMutation = useMutation({
-    mutationFn: () => api(`/users/${user.id}/roles`, { method: "PUT", body: { roleKeys } }),
-    onSuccess: onDone,
+  const saveMutation = useMutation({
+    mutationFn: async () => {
+      if (can("users.update") && status !== user.status) {
+        await api(`/users/${user.id}`, { method: "PATCH", body: { status } });
+      }
+      if (can("roles.manage")) {
+        await api(`/users/${user.id}/roles`, { method: "PUT", body: { roleKeys } });
+      }
+    },
+    onSuccess: () => {
+      onDone();
+      onClose();
+    },
   });
 
   return (
-    <Modal title={`Manage · ${user.fullName}`} open onClose={onClose}>
+    <Modal
+      title={user.fullName}
+      description={user.email}
+      open
+      onClose={onClose}
+      footer={
+        <>
+          <button className="btn-secondary" onClick={onClose}>
+            Cancel
+          </button>
+          <button className="btn-primary" disabled={saveMutation.isPending} onClick={() => saveMutation.mutate()}>
+            {saveMutation.isPending ? "Saving…" : "Save changes"}
+          </button>
+        </>
+      }
+    >
       <div className="space-y-5">
         {can("users.update") && (
-          <div>
-            <Field label="Account status">
-              <div className="flex gap-2">
-                <select className="input" value={status} onChange={(e) => setStatus(e.target.value)}>
-                  <option value="active">Active</option>
-                  <option value="suspended">Suspended</option>
-                </select>
-                <button className="btn-secondary shrink-0" disabled={statusMutation.isPending} onClick={() => statusMutation.mutate()}>
-                  Save
-                </button>
-              </div>
-            </Field>
-            <ErrorNote error={statusMutation.error} />
-          </div>
+          <Field label="Account status">
+            <Select value={status} onChange={(e) => setStatus(e.target.value)}>
+              <option value="active">Active — can sign in</option>
+              <option value="suspended">Suspended — sign-in blocked</option>
+            </Select>
+          </Field>
         )}
         {can("roles.manage") && (
-          <div>
-            <Field label="Roles">
-              <div className="flex flex-wrap gap-2">
-                {roles.map((r) => (
-                  <button
-                    key={r.key}
-                    type="button"
-                    onClick={() => setRoleKeys((prev) => prev.includes(r.key) ? prev.filter((k) => k !== r.key) : [...prev, r.key])}
-                    className={`rounded-full border px-3 py-1 text-xs font-semibold transition ${
-                      roleKeys.includes(r.key) ? "border-primary bg-primary text-primary-foreground" : "border-border text-muted-foreground hover:border-primary/40"
-                    }`}
-                  >
-                    {r.name}
-                  </button>
-                ))}
-              </div>
-            </Field>
-            <button className="btn-primary mt-3 w-full" disabled={rolesMutation.isPending} onClick={() => rolesMutation.mutate()}>
-              {rolesMutation.isPending ? "Saving…" : "Save roles"}
-            </button>
-            <ErrorNote error={rolesMutation.error} />
-          </div>
+          <Field label="Roles">
+            <div className="flex flex-wrap gap-2">
+              {roles.map((r) => (
+                <button
+                  key={r.key}
+                  type="button"
+                  onClick={() => setRoleKeys((prev) => (prev.includes(r.key) ? prev.filter((k) => k !== r.key) : [...prev, r.key]))}
+                  className={`rounded-full border px-3 py-1 text-xs font-semibold transition ${
+                    roleKeys.includes(r.key)
+                      ? "border-primary bg-primary text-primary-foreground"
+                      : "border-border text-muted-foreground hover:border-primary/40"
+                  }`}
+                >
+                  {r.name}
+                </button>
+              ))}
+            </div>
+          </Field>
         )}
+        <ErrorNote error={saveMutation.error} />
       </div>
     </Modal>
   );

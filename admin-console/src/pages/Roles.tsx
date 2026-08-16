@@ -62,7 +62,7 @@ export default function Roles() {
         <table className="w-full min-w-[900px]">
           <thead>
             <tr className="border-b border-border/60">
-              <th className="th sticky left-0 bg-white">Permission</th>
+              <th className="th sticky left-0 bg-card">Permission</th>
               {roles?.map((r) => (
                 <th key={r.id} className="th text-center">
                   <div>{r.name}</div>
@@ -91,7 +91,7 @@ export default function Roles() {
                   ?.filter((p) => p.key.startsWith(`${domain}.`) || p.key === domain)
                   .map((perm) => (
                     <tr key={perm.id} className="border-b border-border/40 last:border-0">
-                      <td className="td sticky left-0 bg-white font-mono text-xs">{perm.key}</td>
+                      <td className="td sticky left-0 bg-card font-mono text-xs">{perm.key}</td>
                       {roles?.map((role) => {
                         const has = grants(role).includes(perm.key);
                         const locked = role.key === "SUPER_ADMIN";
@@ -103,7 +103,7 @@ export default function Roles() {
                               className={`h-5 w-5 rounded border text-[11px] font-bold leading-none transition ${
                                 has
                                   ? "border-primary bg-primary text-primary-foreground"
-                                  : "border-border bg-white text-transparent hover:border-primary/40"
+                                  : "border-input bg-card text-transparent hover:border-primary/50"
                               } ${locked ? "opacity-60" : ""}`}
                             >
                               ✓

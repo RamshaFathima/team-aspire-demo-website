@@ -1,7 +1,18 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { BookOpen, Loader2 } from "lucide-react";
 import { api, can } from "@/lib/api";
-import { Badge, ErrorNote, Field, Modal, PageHeader, Spinner } from "@/components/ui";
+import { Badge, EmptyState, ErrorNote, Field, Modal, PageHeader, TableSkeleton } from "@/components/ui";
+import { Select } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Card } from "@/components/ui/card";
+
+const STATUS_OPTIONS = [
+  { value: "draft", label: "Draft — hidden from the site" },
+  { value: "review", label: "In review" },
+  { value: "published", label: "Published — open for enrollment" },
+  { value: "archived", label: "Archived" },
+];
 
 type Course = {
   id: string;
@@ -46,33 +57,53 @@ export default function Courses() {
       />
 
       {isLoading ? (
-        <Spinner />
+        <TableSkeleton />
+      ) : !data?.data.length ? (
+        <Card>
+          <EmptyState
+            icon={BookOpen}
+            title="No courses yet"
+            description="Create your first course, then add a cohort to open enrollment."
+          />
+        </Card>
       ) : (
         <div className="grid gap-4 md:grid-cols-2">
           {data?.data.map((c) => (
-            <div key={c.id} className="card p-5">
+            <Card key={c.id} className="p-5">
               <div className="flex items-start justify-between gap-3">
                 <div>
-                  <h3 className="font-bold text-foreground/90">{c.title}</h3>
-                  <div className="mt-0.5 text-xs text-muted-foreground/70 capitalize">
-                    {c.category} · {c.isOnline ? c.meetingPlatform ?? "online" : "in-person"} · {c.durationWeeks ?? "?"} wks
-                    {c.certificateEnabled && ` · cert @ ${c.minAttendancePct}% att.`}
+                  <h3 className="font-semibold text-foreground">{c.title}</h3>
+                  <div className="mt-1 text-xs capitalize text-muted-foreground">
+                    {c.category} · {c.isOnline ? (c.meetingPlatform ?? "online") : "in-person"} ·{" "}
+                    {c.durationWeeks ?? "?"} weeks
+                    {c.certificateEnabled && ` · certificate at ${c.minAttendancePct}% attendance`}
                   </div>
                 </div>
                 <Badge value={c.status} />
               </div>
-              <p className="mt-2 line-clamp-2 text-xs text-muted-foreground">{c.summary}</p>
+              <p className="mt-2.5 line-clamp-2 text-xs leading-relaxed text-muted-foreground">{c.summary}</p>
               {can("lms.courses.manage") && (
-                <div className="mt-4 flex flex-wrap gap-2">
-                  {["draft", "review", "published", "archived"].filter((s) => s !== c.status).map((s) => (
-                    <button key={s} className="btn-secondary !px-2.5 !py-1 text-xs capitalize" disabled={statusMutation.isPending} onClick={() => statusMutation.mutate({ id: c.id, status: s })}>
-                      → {s}
-                    </button>
-                  ))}
-                  <button className="btn-primary ml-auto !px-2.5 !py-1 text-xs" onClick={() => setEditing(c)}>Edit</button>
+                <div className="mt-4 flex items-center gap-2 border-t border-border/60 pt-3.5">
+                  <div className="w-56">
+                    <Select
+                      value={c.status}
+                      disabled={statusMutation.isPending}
+                      onChange={(e) => statusMutation.mutate({ id: c.id, status: e.target.value })}
+                    >
+                      {STATUS_OPTIONS.map((s) => (
+                        <option key={s.value} value={s.value}>
+                          {s.label}
+                        </option>
+                      ))}
+                    </Select>
+                  </div>
+                  {statusMutation.isPending && <Loader2 className="h-3.5 w-3.5 animate-spin text-muted-foreground" />}
+                  <button className="btn-secondary ml-auto !px-3 !py-1.5 text-xs" onClick={() => setEditing(c)}>
+                    Edit details
+                  </button>
                 </div>
               )}
-            </div>
+            </Card>
           ))}
         </div>
       )}
@@ -114,40 +145,102 @@ function CourseModal({ course, onClose, onDone }: { course: Course | null; onClo
   });
 
   return (
-    <Modal title={course ? "Edit course" : "New course"} open onClose={onClose}>
+    <Modal
+      title={course ? "Edit course" : "New course"}
+      description={course ? course.title : "Set up the basics — you can refine everything later."}
+      open
+      onClose={onClose}
+      footer={
+        <>
+          <button className="btn-secondary" onClick={onClose}>
+            Cancel
+          </button>
+          <button
+            className="btn-primary"
+            disabled={mutation.isPending || title.length < 3}
+            onClick={() => mutation.mutate()}
+          >
+            {mutation.isPending ? "Saving…" : course ? "Save changes" : "Create course"}
+          </button>
+        </>
+      }
+    >
       <div className="space-y-4">
-        <Field label="Title"><input className="input" value={title} onChange={(e) => setTitle(e.target.value)} /></Field>
-        <Field label="Summary"><textarea className="input" rows={2} value={summary} onChange={(e) => setSummary(e.target.value)} /></Field>
+        <Field label="Title">
+          <input
+            className="input"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="e.g. Seerah Circle — Mercy to the Aalameen"
+          />
+        </Field>
+        <Field label="Summary">
+          <textarea
+            className="input"
+            rows={2}
+            value={summary}
+            onChange={(e) => setSummary(e.target.value)}
+            placeholder="One or two lines shown on the public site"
+          />
+        </Field>
         <div className="grid grid-cols-2 gap-3">
           <Field label="Category">
-            <select className="input" value={category} onChange={(e) => setCategory(e.target.value)}>
-              {["deen", "skills", "wellbeing"].map((c) => <option key={c} value={c}>{c}</option>)}
-            </select>
+            <Select value={category} onChange={(e) => setCategory(e.target.value)}>
+              <option value="deen">Deen</option>
+              <option value="skills">Skills</option>
+              <option value="wellbeing">Wellbeing</option>
+            </Select>
           </Field>
-          <Field label="Duration (weeks)"><input className="input" type="number" value={durationWeeks} onChange={(e) => setDurationWeeks(e.target.value)} /></Field>
+          <Field label="Duration (weeks)">
+            <input
+              className="input"
+              type="number"
+              value={durationWeeks}
+              onChange={(e) => setDurationWeeks(e.target.value)}
+              placeholder="12"
+            />
+          </Field>
           <Field label="Mode">
-            <select className="input" value={isOnline ? "online" : "offline"} onChange={(e) => setIsOnline(e.target.value === "online")}>
+            <Select
+              value={isOnline ? "online" : "offline"}
+              onChange={(e) => setIsOnline(e.target.value === "online")}
+            >
               <option value="online">Online</option>
               <option value="offline">In-person</option>
-            </select>
+            </Select>
           </Field>
-          <Field label="Platform / venue"><input className="input" value={meetingPlatform} onChange={(e) => setMeetingPlatform(e.target.value)} /></Field>
+          <Field label={isOnline ? "Platform" : "Venue"}>
+            <input
+              className="input"
+              value={meetingPlatform}
+              onChange={(e) => setMeetingPlatform(e.target.value)}
+              placeholder={isOnline ? "Zoom" : "Community Centre"}
+            />
+          </Field>
         </div>
-        <div className="flex items-center gap-4">
-          <label className="flex items-center gap-2 text-sm text-muted-foreground">
-            <input type="checkbox" className="h-4 w-4 accent-[#635bff]" checked={certificateEnabled} onChange={(e) => setCertificateEnabled(e.target.checked)} />
-            Certificate enabled
-          </label>
+        <div className="rounded-xl border border-border bg-muted/40 p-3.5">
+          <Checkbox
+            checked={certificateEnabled}
+            onChange={setCertificateEnabled}
+            label="Award a certificate on completion"
+            hint="Students who meet the attendance requirement can be issued a verified certificate."
+          />
           {certificateEnabled && (
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              min attendance <input className="input !w-20" type="number" value={minAttendancePct} onChange={(e) => setMinAttendancePct(e.target.value)} /> %
+            <div className="mt-3 flex items-center gap-2 pl-7 text-[13px] text-muted-foreground">
+              Requires
+              <input
+                className="input !w-16 text-center"
+                type="number"
+                min={0}
+                max={100}
+                value={minAttendancePct}
+                onChange={(e) => setMinAttendancePct(e.target.value)}
+              />
+              % attendance
             </div>
           )}
         </div>
         <ErrorNote error={mutation.error} />
-        <button className="btn-primary w-full" disabled={mutation.isPending || title.length < 3} onClick={() => mutation.mutate()}>
-          {mutation.isPending ? "Saving…" : "Save course"}
-        </button>
       </div>
     </Modal>
   );

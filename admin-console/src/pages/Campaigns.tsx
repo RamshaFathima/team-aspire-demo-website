@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { api, can, inr } from "@/lib/api";
 import { Badge, ErrorNote, Field, Modal, PageHeader, Spinner } from "@/components/ui";
+import { Select } from "@/components/ui/select";
 
 type Campaign = {
   id: string;
@@ -109,30 +110,56 @@ function CampaignModal({ campaign, projects, onClose, onDone }: { campaign: Camp
   });
 
   return (
-    <Modal title={campaign ? "Edit campaign" : "New campaign"} open onClose={onClose}>
+    <Modal
+      title={campaign ? "Edit campaign" : "New campaign"}
+      description="A time-bound fundraising drive, optionally tied to a project."
+      open
+      onClose={onClose}
+      footer={
+        <>
+          <button className="btn-secondary" onClick={onClose}>
+            Cancel
+          </button>
+          <button
+            className="btn-primary"
+            disabled={mutation.isPending || title.length < 3}
+            onClick={() => mutation.mutate()}
+          >
+            {mutation.isPending ? "Saving…" : campaign ? "Save changes" : "Create campaign"}
+          </button>
+        </>
+      }
+    >
       <div className="space-y-4">
-        <Field label="Title"><input className="input" value={title} onChange={(e) => setTitle(e.target.value)} /></Field>
-        <Field label="Description"><textarea className="input" rows={3} value={description} onChange={(e) => setDescription(e.target.value)} /></Field>
+        <Field label="Title">
+          <input className="input" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="e.g. Restoring Hope" />
+        </Field>
+        <Field label="Description">
+          <textarea className="input" rows={3} value={description} onChange={(e) => setDescription(e.target.value)} />
+        </Field>
         <div className="grid grid-cols-2 gap-3">
           <Field label="Linked project">
-            <select className="input" value={projectId} onChange={(e) => setProjectId(e.target.value)}>
+            <Select value={projectId} onChange={(e) => setProjectId(e.target.value)}>
               <option value="">None</option>
-              {projects.map((p) => <option key={p.id} value={p.id}>{p.title}</option>)}
-            </select>
+              {projects.map((p) => (
+                <option key={p.id} value={p.id}>
+                  {p.title}
+                </option>
+              ))}
+            </Select>
           </Field>
-          <Field label="Goal (₹)"><input className="input" type="number" value={goalAmount} onChange={(e) => setGoalAmount(e.target.value)} /></Field>
+          <Field label="Goal (₹)">
+            <input className="input" type="number" value={goalAmount} onChange={(e) => setGoalAmount(e.target.value)} />
+          </Field>
         </div>
         <Field label="Status">
-          <select className="input" value={status} onChange={(e) => setStatus(e.target.value)}>
-            <option value="active">Active</option>
+          <Select value={status} onChange={(e) => setStatus(e.target.value)}>
+            <option value="active">Active — accepting donations</option>
             <option value="completed">Completed</option>
             <option value="archived">Archived</option>
-          </select>
+          </Select>
         </Field>
         <ErrorNote error={mutation.error} />
-        <button className="btn-primary w-full" disabled={mutation.isPending || title.length < 3} onClick={() => mutation.mutate()}>
-          {mutation.isPending ? "Saving…" : "Save campaign"}
-        </button>
       </div>
     </Modal>
   );

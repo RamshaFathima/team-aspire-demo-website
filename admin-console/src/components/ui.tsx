@@ -1,6 +1,14 @@
 import { ArrowDownRight, ArrowUpRight, Inbox, Loader2 } from "lucide-react";
 import { Badge as UiBadge, type BadgeProps } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogBody,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
@@ -54,15 +62,19 @@ export function Badge({ value }: { value: string | null | undefined }) {
 
 export function Modal({
   title,
+  description,
   open,
   onClose,
   children,
+  footer,
   wide,
 }: {
   title: string;
+  description?: string;
   open: boolean;
   onClose: () => void;
   children: React.ReactNode;
+  footer?: React.ReactNode;
   wide?: boolean;
 }) {
   return (
@@ -70,8 +82,10 @@ export function Modal({
       <DialogContent wide={wide}>
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
+          {description && <DialogDescription>{description}</DialogDescription>}
         </DialogHeader>
-        {children}
+        <DialogBody>{children}</DialogBody>
+        {footer && <DialogFooter>{footer}</DialogFooter>}
       </DialogContent>
     </Dialog>
   );

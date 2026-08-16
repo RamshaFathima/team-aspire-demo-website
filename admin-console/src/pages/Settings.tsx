@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/lib/api";
 import { ErrorNote, Field, Modal, PageHeader, Spinner } from "@/components/ui";
+import { Select } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
 
 type Setting = {
   key: string;
@@ -73,17 +75,19 @@ export default function Settings() {
 
 function SettingModal({ setting, onClose, onDone }: { setting: Setting | null; onClose: () => void; onDone: () => void }) {
   const [key, setKey] = useState(setting?.key ?? "");
-  const [valueJson, setValueJson] = useState(JSON.stringify(setting?.value ?? ""));
+  const initial = setting?.value;
+  const initialKind: "text" | "number" | "toggle" =
+    typeof initial === "number" ? "number" : typeof initial === "boolean" ? "toggle" : "text";
+  const [kind, setKind] = useState<"text" | "number" | "toggle">(initialKind);
+  const [textValue, setTextValue] = useState(typeof initial === "string" ? initial : "");
+  const [numberValue, setNumberValue] = useState(typeof initial === "number" ? String(initial) : "");
+  const [boolValue, setBoolValue] = useState(initial === true);
   const [description, setDescription] = useState(setting?.description ?? "");
 
   const mutation = useMutation({
     mutationFn: () => {
-      let value: unknown;
-      try {
-        value = JSON.parse(valueJson);
-      } catch {
-        throw { message: "Value must be valid JSON (strings need quotes: \"text\")" };
-      }
+      const value: unknown =
+        kind === "number" ? Number(numberValue || 0) : kind === "toggle" ? boolValue : textValue;
       return api(`/settings/${encodeURIComponent(key)}`, {
         method: "PUT",
         body: { value, description: description || undefined },
@@ -93,19 +97,50 @@ function SettingModal({ setting, onClose, onDone }: { setting: Setting | null; o
   });
 
   return (
-    <Modal title={setting ? `Edit ${setting.key}` : "New setting"} open onClose={onClose}>
+    <Modal
+      title={setting ? `Edit setting` : "New setting"}
+      description={setting ? setting.key : "site.*, features.* and donations.* are visible to the public website."}
+      open
+      onClose={onClose}
+      footer={
+        <>
+          <button className="btn-secondary" onClick={onClose}>
+            Cancel
+          </button>
+          <button className="btn-primary" disabled={!key || mutation.isPending} onClick={() => mutation.mutate()}>
+            {mutation.isPending ? "Saving…" : "Save setting"}
+          </button>
+        </>
+      }
+    >
       <div className="space-y-4">
         {!setting && (
-          <Field label="Key (e.g. site.tagline)"><input className="input font-mono" value={key} onChange={(e) => setKey(e.target.value)} /></Field>
+          <Field label="Key (e.g. site.tagline)">
+            <input className="input font-mono" value={key} onChange={(e) => setKey(e.target.value)} />
+          </Field>
         )}
-        <Field label='Value (JSON — e.g. "text", 10, true)'>
-          <input className="input font-mono" value={valueJson} onChange={(e) => setValueJson(e.target.value)} />
+        <Field label="Type">
+          <Select value={kind} onChange={(e) => setKind(e.target.value as typeof kind)}>
+            <option value="text">Text</option>
+            <option value="number">Number</option>
+            <option value="toggle">On / Off</option>
+          </Select>
         </Field>
-        <Field label="Description"><input className="input" value={description} onChange={(e) => setDescription(e.target.value)} /></Field>
+        <Field label="Value">
+          {kind === "text" && (
+            <input className="input" value={textValue} onChange={(e) => setTextValue(e.target.value)} />
+          )}
+          {kind === "number" && (
+            <input className="input" type="number" value={numberValue} onChange={(e) => setNumberValue(e.target.value)} />
+          )}
+          {kind === "toggle" && (
+            <Checkbox checked={boolValue} onChange={setBoolValue} label={boolValue ? "Enabled" : "Disabled"} />
+          )}
+        </Field>
+        <Field label="Description">
+          <input className="input" value={description} onChange={(e) => setDescription(e.target.value)} />
+        </Field>
         <ErrorNote error={mutation.error} />
-        <button className="btn-primary w-full" disabled={!key || mutation.isPending} onClick={() => mutation.mutate()}>
-          {mutation.isPending ? "Saving…" : "Save setting"}
-        </button>
       </div>
     </Modal>
   );

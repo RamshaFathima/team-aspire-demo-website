@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { api, can, fmtDateTime, inr } from "@/lib/api";
 import { Badge, ErrorNote, Modal, PageHeader, Spinner } from "@/components/ui";
+import { Select } from "@/components/ui/select";
 
 type Donation = {
   id: string;
@@ -51,11 +52,11 @@ export default function Donations() {
 
       <div className="mb-4 flex flex-wrap gap-3">
         <input className="input max-w-xs" placeholder="Search donor, email, receipt…" value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }} />
-        <select className="input max-w-[160px]" value={status} onChange={(e) => { setStatus(e.target.value); setPage(1); }}>
+        <Select className="max-w-[180px]" value={status} onChange={(e) => { setStatus(e.target.value); setPage(1); }}>
           {STATUSES.map((s) => (
             <option key={s} value={s}>{s ? s : "All statuses"}</option>
           ))}
-        </select>
+        </Select>
       </div>
 
       {isLoading ? (
@@ -119,42 +120,66 @@ function DonationModal({ donation, onClose, onDone }: { donation: Donation; onCl
   });
 
   return (
-    <Modal title={`Donation · ${inr(donation.amount)}`} open onClose={onClose}>
+    <Modal
+      title={`Donation · ${inr(donation.amount)}`}
+      description={`${donation.isAnonymous ? "Anonymous" : donation.donorName} · ${donation.donorEmail}`}
+      open
+      onClose={onClose}
+      footer={
+        <>
+          <button className="btn-secondary" onClick={onClose}>
+            Close
+          </button>
+          {["pending", "initiated"].includes(donation.status) && can("donations.manage") && (
+            <button className="btn-primary" disabled={confirmMutation.isPending} onClick={() => confirmMutation.mutate()}>
+              {confirmMutation.isPending ? "Confirming…" : "Confirm payment received"}
+            </button>
+          )}
+        </>
+      }
+    >
       <dl className="space-y-2 text-sm">
-        <Row label="Donor" value={`${donation.donorName} (${donation.donorEmail})`} />
         <Row label="Towards" value={donation.campaign?.title ?? donation.project?.title ?? "General fund"} />
-        <Row label="Method" value={donation.method} />
-        <Row label="Frequency" value={donation.frequency} />
+        <Row label="Method" value={donation.method.replace("mock_", "").replace("_", " ")} />
+        <Row label="Frequency" value={donation.frequency.replace("_", " ")} />
         <Row label="Gateway ref" value={donation.gatewayRef} mono />
         <Row label="Receipt" value={donation.receiptNumber ?? "—"} mono />
         {donation.message && <Row label="Message" value={donation.message} />}
         {donation.refundReason && <Row label="Refund reason" value={donation.refundReason} />}
-        <div className="flex items-center justify-between border-b border-border/40 pb-2">
+        <div className="flex items-center justify-between pb-1">
           <dt className="text-muted-foreground/70">Status</dt>
-          <dd><Badge value={donation.status} /></dd>
+          <dd>
+            <Badge value={donation.status} />
+          </dd>
         </div>
       </dl>
 
-      <div className="mt-5 space-y-3">
-        {["pending", "initiated"].includes(donation.status) && can("donations.manage") && (
-          <>
-            <button className="btn-primary w-full" disabled={confirmMutation.isPending} onClick={() => confirmMutation.mutate()}>
-              {confirmMutation.isPending ? "Confirming…" : "Confirm payment received"}
+      <ErrorNote error={confirmMutation.error} />
+
+      {donation.status === "success" && can("donations.refund") && (
+        <div className="mt-4 rounded-xl border border-destructive/20 bg-destructive/5 p-3.5">
+          <div className="text-xs font-semibold text-destructive">Refund this donation</div>
+          <p className="mt-0.5 text-2xs text-muted-foreground">
+            Reverses the amount from project & campaign totals. This is recorded in the activity log.
+          </p>
+          <div className="mt-2 flex gap-2">
+            <input
+              className="input"
+              placeholder="Reason — required"
+              value={refundReason}
+              onChange={(e) => setRefundReason(e.target.value)}
+            />
+            <button
+              className="btn-danger shrink-0"
+              disabled={refundMutation.isPending || refundReason.length < 3}
+              onClick={() => refundMutation.mutate()}
+            >
+              {refundMutation.isPending ? "Refunding…" : "Refund"}
             </button>
-            <ErrorNote error={confirmMutation.error} />
-          </>
-        )}
-        {donation.status === "success" && can("donations.refund") && (
-          <div className="rounded-lg border border-destructive/20 bg-destructive/5 p-3">
-            <span className="label !text-destructive">Refund</span>
-            <input className="input" placeholder="Reason for refund…" value={refundReason} onChange={(e) => setRefundReason(e.target.value)} />
-            <button className="btn-danger mt-2 w-full" disabled={refundMutation.isPending || refundReason.length < 3} onClick={() => refundMutation.mutate()}>
-              {refundMutation.isPending ? "Refunding…" : "Refund donation"}
-            </button>
-            <ErrorNote error={refundMutation.error} />
           </div>
-        )}
-      </div>
+          <ErrorNote error={refundMutation.error} />
+        </div>
+      )}
     </Modal>
   );
 }

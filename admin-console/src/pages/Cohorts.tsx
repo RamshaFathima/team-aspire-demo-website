@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { api, can, fmtDate } from "@/lib/api";
 import { Badge, ErrorNote, Field, Modal, PageHeader, Spinner } from "@/components/ui";
+import { Select } from "@/components/ui/select";
 
 type Cohort = {
   id: string;
@@ -108,29 +109,64 @@ function CohortModal({ courses, onClose, onDone }: { courses: Course[]; onClose:
   });
 
   return (
-    <Modal title="New cohort" open onClose={onClose}>
+    <Modal
+      title="New cohort"
+      description="A cohort is one batch of a course — with its own students, schedule and sessions."
+      open
+      onClose={onClose}
+      footer={
+        <>
+          <button className="btn-secondary" onClick={onClose}>
+            Cancel
+          </button>
+          <button
+            className="btn-primary"
+            disabled={mutation.isPending || !courseId || name.length < 2}
+            onClick={() => mutation.mutate()}
+          >
+            {mutation.isPending ? "Creating…" : "Create cohort"}
+          </button>
+        </>
+      }
+    >
       <div className="space-y-4">
         <Field label="Course">
-          <select className="input" value={courseId} onChange={(e) => setCourseId(e.target.value)}>
+          <Select value={courseId} onChange={(e) => setCourseId(e.target.value)}>
             <option value="">Select course…</option>
-            {courses.map((c) => <option key={c.id} value={c.id}>{c.title}</option>)}
-          </select>
+            {courses.map((c) => (
+              <option key={c.id} value={c.id}>
+                {c.title}
+              </option>
+            ))}
+          </Select>
         </Field>
-        <Field label="Cohort name"><input className="input" value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Batch 2026-A" /></Field>
-        <Field label="Schedule note"><input className="input" value={scheduleNote} onChange={(e) => setScheduleNote(e.target.value)} placeholder="Every Sunday 11:00–12:30" /></Field>
+        <Field label="Cohort name">
+          <input className="input" value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Batch 2026-A" />
+        </Field>
+        <Field label="Schedule note">
+          <input
+            className="input"
+            value={scheduleNote}
+            onChange={(e) => setScheduleNote(e.target.value)}
+            placeholder="Every Sunday 11:00–12:30"
+          />
+        </Field>
         <div className="grid grid-cols-3 gap-3">
-          <Field label="Starts on"><input className="input" type="date" value={startsOn} onChange={(e) => setStartsOn(e.target.value)} /></Field>
-          <Field label="Capacity"><input className="input" type="number" value={capacity} onChange={(e) => setCapacity(e.target.value)} /></Field>
+          <Field label="Starts on">
+            <input className="input" type="date" value={startsOn} onChange={(e) => setStartsOn(e.target.value)} />
+          </Field>
+          <Field label="Capacity">
+            <input className="input" type="number" value={capacity} onChange={(e) => setCapacity(e.target.value)} placeholder="No limit" />
+          </Field>
           <Field label="Status">
-            <select className="input" value={status} onChange={(e) => setStatus(e.target.value)}>
-              {["upcoming", "active", "completed"].map((s) => <option key={s} value={s}>{s}</option>)}
-            </select>
+            <Select value={status} onChange={(e) => setStatus(e.target.value)}>
+              <option value="upcoming">Upcoming</option>
+              <option value="active">Active</option>
+              <option value="completed">Completed</option>
+            </Select>
           </Field>
         </div>
         <ErrorNote error={mutation.error} />
-        <button className="btn-primary w-full" disabled={mutation.isPending || !courseId || name.length < 2} onClick={() => mutation.mutate()}>
-          {mutation.isPending ? "Creating…" : "Create cohort"}
-        </button>
       </div>
     </Modal>
   );
