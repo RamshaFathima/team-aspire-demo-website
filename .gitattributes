@@ -1,0 +1,31 @@
+# Line endings: this repo is authored across Windows and macOS/Linux.
+# Store LF in git AND check out LF everywhere, so the working tree never
+# drifts back to CRLF regardless of contributor platform or core.autocrlf.
+* text=auto eol=lf
+
+# Binary assets — never touch, never diff as text.
+*.png    binary
+*.jpg    binary
+*.jpeg   binary
+*.gif    binary
+*.ico    binary
+*.webp   binary
+*.avif   binary
+*.pdf    binary
+*.zip    binary
+*.gz     binary
+*.woff   binary
+*.woff2  binary
+*.ttf    binary
+*.otf    binary
+*.eot    binary
+*.mp4    binary
+*.webm   binary
+
+# SVG is text but should not be merged line-wise as source.
+*.svg    text eol=lf
+
+# Lockfiles: LF, and keep them out of diff noise.
+package-lock.json  text eol=lf -diff
+yarn.lock          text eol=lf -diff
+pnpm-lock.yaml     text eol=lf -diff
