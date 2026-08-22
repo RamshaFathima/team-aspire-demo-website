@@ -1,6 +1,6 @@
 "use client";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+const API_URL = "/api";
 
 export type ApiError = { message: string; status: number };
 
@@ -9,12 +9,15 @@ export async function clientApi<T>(
   path: string,
   options: { method?: string; body?: unknown; auth?: boolean } = {},
 ): Promise<T> {
-  const headers: Record<string, string> = { "Content-Type": "application/json" };
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+    "ngrok-skip-browser-warning": "true",
+  };
   if (options.auth !== false) {
     const token = getToken();
     if (token) headers.Authorization = `Bearer ${token}`;
   }
-  const res = await fetch(`${API_URL}/api/v1${path}`, {
+  const res = await fetch(`${API_URL}/v1${path}`, {
     method: options.method ?? "GET",
     headers,
     body: options.body !== undefined ? JSON.stringify(options.body) : undefined,

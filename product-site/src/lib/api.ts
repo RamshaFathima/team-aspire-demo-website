@@ -5,7 +5,10 @@ const API_URL = process.env.API_URL ?? "http://localhost:8000";
  * Always no-store: admin changes must reflect on the site immediately.
  */
 export async function api<T>(path: string): Promise<T> {
-  const res = await fetch(`${API_URL}/api/v1${path}`, { cache: "no-store" });
+  const res = await fetch(`${API_URL}/api/v1${path}`, {
+    cache: "no-store",
+    headers: { "ngrok-skip-browser-warning": "true" },
+  });
   if (!res.ok) {
     throw new Error(`API ${path} failed with ${res.status}`);
   }

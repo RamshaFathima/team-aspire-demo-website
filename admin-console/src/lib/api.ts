@@ -1,4 +1,4 @@
-const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
+const API_URL = "/api";
 
 const TOKEN_KEY = "aspire.admin.token";
 const USER_KEY = "aspire.admin.user";
@@ -41,11 +41,14 @@ export async function api<T = unknown>(
   path: string,
   options: { method?: string; body?: unknown } = {},
 ): Promise<T> {
-  const headers: Record<string, string> = { "Content-Type": "application/json" };
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+    "ngrok-skip-browser-warning": "true",
+  };
   const token = getToken();
   if (token) headers.Authorization = `Bearer ${token}`;
 
-  const res = await fetch(`${API_URL}/api/v1${path}`, {
+  const res = await fetch(`${API_URL}/v1${path}`, {
     method: options.method ?? "GET",
     headers,
     body: options.body !== undefined ? JSON.stringify(options.body) : undefined,
