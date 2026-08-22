@@ -5,8 +5,8 @@ node_modules/
 dist/
 
 # ── Auto-generated proto stubs (regenerated via postinstall / proto:build) ──
-src-typescript/proto/generated/
-src-javascript/proto/generated/
+src/proto/generated/
+src/proto/generated/
 
 # ── Environment ──
 .env

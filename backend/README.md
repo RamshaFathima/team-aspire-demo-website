@@ -49,7 +49,7 @@ Both source trees expose the same application shape. The TypeScript tree include
 types; the JavaScript tree loads proto files at runtime.
 
 ```text
-src-typescript/
+src/
     server.ts                         # HTTP, Socket.IO, cron, Redis, and gRPC bootstrap
     app/
         apis/                           # REST + gRPC controllers, repositories, services
@@ -106,12 +106,12 @@ directory.
 
 ### gRPC
 
-gRPC is bootstrapped from `src-typescript/config/grpcConfig.ts` and
+gRPC is bootstrapped from `src/config/grpcConfig.ts` and
 `src-javascript/config/grpcConfig.js`.
 
 - Service modules live in `app/grpc` and must be named `*.grpc.ts` or `*.grpc.js`.
-- Protos live in `src-typescript/proto`; keep `.proto` files committed and generated output ignored.
-- TypeScript stubs are generated into `src-typescript/proto/generated` with `pnpm proto:build-ts`.
+- Protos live in `src/proto`; keep `.proto` files committed and generated output ignored.
+- TypeScript stubs are generated into `src/proto/generated` with `pnpm proto:build-ts`.
 - `pnpm build` runs `proto:build-ts` before compiling TypeScript.
 - The JS tree uses `@grpc/proto-loader` at runtime and does not require generated JS stubs.
 - Health checks are always enabled from `proto/shared/health.proto`.
