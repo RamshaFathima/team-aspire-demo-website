@@ -5,13 +5,13 @@
   "main": "server.js",
   "packageManager": "pnpm@10.17.0",
   "scripts": {
-    "dev": "nodemon --config nodemon.json src-typescript/server.ts",
-    "start": "ts-node --transpile-only src-typescript/server.ts",
+    "dev": "nodemon --config nodemon.json src/server.ts",
+    "start": "ts-node --transpile-only src/server.ts",
     "keys:generate": "node scripts/generate-keys.cjs",
-    "db:seed": "ts-node --transpile-only src-typescript/seed.ts",
+    "db:seed": "ts-node --transpile-only src/seed.ts",
     "build": "tsc",
     "preview": "node dist/server.js",
-    "prettier": "prettier --write \"src-typescript/**/*.ts\"",
+    "prettier": "prettier --write \"src/**/*.ts\"",
     "lint": "eslint"
   },
   "author": "Team Aspire",

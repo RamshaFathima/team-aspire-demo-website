@@ -31,9 +31,20 @@ const server = async () => {
     });
 
     app.use(pinoHttp({ logger }));
+    const corsOrigins = (process.env.CORS_ORIGINS || '')
+        .split(',')
+        .map((origin) => origin.trim())
+        .filter(Boolean);
     app.use(
         cors({
-            origin: '*',
+            origin: (requestOrigin, callback) => {
+                // Requests without an Origin include health checks and server-to-server calls.
+                if (!requestOrigin || corsOrigins.includes(requestOrigin)) {
+                    callback(null, requestOrigin || true);
+                    return;
+                }
+                callback(new Error(`CORS origin not allowed: ${requestOrigin}`));
+            },
             methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
             allowedHeaders: [
                 'Content-Type',
@@ -55,6 +66,7 @@ const server = async () => {
                 'User-Agent',
                 'X-Forwarded-For',
                 'X-Forwarded-Proto',
+                'ngrok-skip-browser-warning',
             ],
             exposedHeaders: [
                 'Content-Type',
