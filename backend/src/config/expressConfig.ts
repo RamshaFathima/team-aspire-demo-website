@@ -13,6 +13,12 @@ import SwaggerConfig from './swaggerConfig';
 
 const server = async () => {
     const app = express();
+
+    // Behind cloudflared on the Docker bridge network. Trusting only private
+    // ranges (not `true`) means req.ip resolves to the real client address from
+    // X-Forwarded-For without letting a caller spoof it.
+    app.set('trust proxy', ['loopback', 'linklocal', 'uniquelocal']);
+
     app.use(express.static('public'));
     app.use(express.json());
     app.use(express.urlencoded({ extended: true }));
@@ -43,7 +49,13 @@ const server = async () => {
                     callback(null, requestOrigin || true);
                     return;
                 }
-                callback(new Error(`CORS origin not allowed: ${requestOrigin}`));
+                // Not an error. Both frontends proxy /api same-origin, so the browser
+                // still sends its own Origin (the tunnel hostname) on requests that are
+                // never cross-origin and never CORS-checked. Withholding the
+                // Access-Control-Allow-Origin header lets those through untouched while
+                // the browser keeps blocking a genuinely cross-origin caller.
+                logger.debug({ requestOrigin }, 'CORS origin not in allowlist');
+                callback(null, false);
             },
             methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
             allowedHeaders: [
@@ -66,7 +78,6 @@ const server = async () => {
                 'User-Agent',
                 'X-Forwarded-For',
                 'X-Forwarded-Proto',
-                'ngrok-skip-browser-warning',
             ],
             exposedHeaders: [
                 'Content-Type',

@@ -14,3 +14,7 @@ Thumbs.db
 drizzle/meta/
 .vscode/*
 !.vscode/extensions.json
+
+# Cloudflare tunnel token lives in the root .env (already ignored above).
+# Kept in case you ever switch to a locally-managed tunnel:
+cloudflared/*.json

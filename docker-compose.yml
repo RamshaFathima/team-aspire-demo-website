@@ -1,0 +1,101 @@
+name: aspire
+
+# Nothing here publishes a port. cloudflared makes only outbound connections,
+# so the Pi exposes no inbound surface at all; the three apps are reachable
+# solely through the tunnel.
+
+x-logging: &default-logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "3"
+
+services:
+  backend:
+    build:
+      context: ./backend
+    image: aspire-backend:local
+    restart: unless-stopped
+    env_file: ./backend/.env
+    environment:
+      NODE_ENV: production
+      PORT: "8000"
+      # Otherwise pino logs every line as "node-service-template".
+      SERVICE_NAME: aspire-backend
+      # Overrides the repo-relative path in .env with the mount point below.
+      JWT_PRIVATE_KEY_PATH: /run/keys/private.pem
+    volumes:
+      - ./backend/keys:/run/keys:ro
+    networks: [aspire]
+    logging: *default-logging
+    mem_limit: 768m
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - "fetch('http://127.0.0.1:8000/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 45s
+
+  product-site:
+    build:
+      context: ./product-site
+      args:
+        # Baked into the rewrite destination at build time.
+        API_URL: http://backend:8000
+    image: aspire-product-site:local
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: "3000"
+      HOSTNAME: "0.0.0.0"
+      # Consumed by next.config rewrites and by the server-side fetch helper.
+      API_URL: http://backend:8000
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks: [aspire]
+    logging: *default-logging
+    mem_limit: 512m
+
+  admin-console:
+    build:
+      context: ./admin-console
+    image: aspire-admin-console:local
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks: [aspire]
+    logging: *default-logging
+    mem_limit: 128m
+
+  # Remotely-managed tunnel: ingress lives in the Zero Trust dashboard, not here.
+  # Published application routes (must match the service names below):
+  #   aspire-site.your-domain.dev  -> http://product-site:3000
+  #   aspire-admin.your-domain.dev -> http://admin-console:80
+  #   aspire-api.your-domain.dev   -> http://backend:8000
+  #   catch-all                   -> http_status:404
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    restart: unless-stopped
+    command: tunnel --no-autoupdate run
+    environment:
+      TUNNEL_TOKEN: ${TUNNEL_TOKEN:?set TUNNEL_TOKEN in .env}
+    depends_on:
+      backend:
+        condition: service_healthy
+      product-site:
+        condition: service_started
+      admin-console:
+        condition: service_started
+    networks: [aspire]
+    logging: *default-logging
+    mem_limit: 128m
+
+networks:
+  aspire:
+    driver: bridge

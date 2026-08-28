@@ -1,6 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Emits .next/standalone with a self-contained server.js for the container.
+  output: "standalone",
   images: { unoptimized: true },
   async rewrites() {
     return [
