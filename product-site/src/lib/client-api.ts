@@ -11,7 +11,6 @@ export async function clientApi<T>(
 ): Promise<T> {
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
-    "ngrok-skip-browser-warning": "true",
   };
   if (options.auth !== false) {
     const token = getToken();

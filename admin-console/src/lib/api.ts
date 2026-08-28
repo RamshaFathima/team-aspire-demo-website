@@ -43,7 +43,6 @@ export async function api<T = unknown>(
 ): Promise<T> {
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
-    "ngrok-skip-browser-warning": "true",
   };
   const token = getToken();
   if (token) headers.Authorization = `Bearer ${token}`;
